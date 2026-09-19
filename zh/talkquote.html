@@ -1,0 +1,1267 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="写给电工、水暖工、油漆工、木工、瓦工和包工头——在车里报价，而不是在办公桌前。离开现场前把活儿说一遍，Talkquote 就把它变成带单价的条目、总额，以及客户能看懂的 PDF。">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBFBFD">
+<meta property="og:title" content="Talkquote — 说出这项工作需要什么，报价单自己写好。">
+<meta property="og:description" content="写给电工、水暖工、油漆工、木工、瓦工和包工头——在车里报价，而不是在办公桌前。离开现场前把活儿说一遍，Talkquote 就把它变成带单价的条目、总额，以及客户能看懂的 PDF。">
+<meta property="og:type" content="website">
+<title>Talkquote — 说出这项工作需要什么，报价单自己写好。</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101418'/%3E%3Ccircle cx='22.6' cy='9' r='3.6' fill='%23FFB340'/%3E%3Cpath d='M3 27 L12.2 11 L17.4 19.6 L20.6 14.8 L29 27 Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="alternate" hreflang="en" href="https://alpenlume.github.io/talkquote.html">
+<link rel="alternate" hreflang="de" href="https://alpenlume.github.io/de/talkquote.html">
+<link rel="alternate" hreflang="fr" href="https://alpenlume.github.io/fr/talkquote.html">
+<link rel="alternate" hreflang="it" href="https://alpenlume.github.io/it/talkquote.html">
+<link rel="alternate" hreflang="es" href="https://alpenlume.github.io/es/talkquote.html">
+<link rel="alternate" hreflang="pl" href="https://alpenlume.github.io/pl/talkquote.html">
+<link rel="alternate" hreflang="ru" href="https://alpenlume.github.io/ru/talkquote.html">
+<link rel="alternate" hreflang="el" href="https://alpenlume.github.io/el/talkquote.html">
+<link rel="alternate" hreflang="ja" href="https://alpenlume.github.io/ja/talkquote.html">
+<link rel="alternate" hreflang="zh" href="https://alpenlume.github.io/zh/talkquote.html">
+<link rel="alternate" hreflang="x-default" href="https://alpenlume.github.io/talkquote.html">
+<link rel="preload" href="../fonts/space-grotesk-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ATELIER — the second design of these pages.
+
+   WHAT WAS WRONG WITH THE FIRST ONE
+
+   It was built out of the parts every product page is built out of: a
+   gradient blob behind the hero, full-bleed grey bands alternating down the
+   page, and screenshots tilted in perspective. Each is fine on its own.
+   Together they read as a template, and a template is the one thing a tool
+   sold on care cannot look like.
+
+   Tilting the screenshots was the worst of it. A photograph of a screen held
+   at an angle is a picture of a phone; a screen shown straight on is the
+   software. Somebody deciding whether to buy wants the second.
+
+   WHAT THIS ONE DOES INSTEAD
+
+   A background that is a place rather than a decoration: a wide, slow mesh
+   of the app's own four hues over paper, a fine drawing grid that fades as
+   you go down, and a little grain so the flat colour has a surface. Painted
+   once, cached, and moved by nothing.
+
+   Screens straight on, seated on a tinted plinth with a real contact
+   shadow, so they read as objects on a desk rather than floating rectangles.
+
+   Sections that stop alternating. Instead of grey stripes, a hairline and
+   air, and where a section really is a separate thing, a raised sheet inset
+   from the page. Numbered labels, because a long page a person is deciding
+   from should tell them where they are.
+   ═══════════════════════════════════════════════════════════════ */
+
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --ink:#1D1D1F; --soft:#6E6E73; --faint:#98989D;
+  --bg:#FBFBFD; --panel:#F2F2F7; --card:#fff; --line:#E5E5EA;
+  --accent:#CC3F14; --accent-soft:#FFE6DC; --accent-ink:#8A2A0C;
+  --display:"Space Grotesk",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; --body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --hue2:#FF8A50; --hue3:#D6F06A; --hue4:#FFB8A8;
+
+  --r:20px;            /* cards, sheets */
+  --r-lg:34px;         /* screens, the call to action */
+  --gutter:clamp(20px,4vw,40px);
+  --rule:color-mix(in srgb,var(--ink) 9%,transparent);
+
+  /* Shadows in three steps, all of them warm rather than grey: a neutral
+     shadow under a warm page reads as dirt. */
+  --lift-1:0 1px 1px rgba(28,22,16,.04),0 4px 12px rgba(28,22,16,.05);
+  --lift-2:0 1px 2px rgba(28,22,16,.05),0 14px 34px rgba(28,22,16,.09);
+  --lift-3:0 2px 4px rgba(28,22,16,.06),0 34px 74px rgba(28,22,16,.15);
+}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.65 var(--body);-webkit-font-smoothing:antialiased;
+  font-feature-settings:"kern","liga";position:relative;overflow-x:clip}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;
+  letter-spacing:-.028em;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gutter)}
+.narrow{max-width:780px}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:14px;top:12px;z-index:60;background:var(--card);padding:10px 16px;
+  border-radius:10px;border:1px solid var(--line)}
+
+/* ── The ground the whole page stands on ──────────────────────────
+   Three fixed layers, none of which ever repaints:
+
+   1. a mesh of the app's four hues, wide and faint, so the page has a
+      temperature that changes as you scroll past it;
+   2. a drawing grid, 92px, fading out below the fold — the reference to
+      a drawing board is deliberate in tools sold to people who measure
+      things for a living;
+   3. grain, three per cent, which is what stops large flat colour from
+      looking like a screenshot of a colour.
+   ──────────────────────────────────────────────────────────────── */
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(62% 48% at 6% -6%,
+      color-mix(in srgb,var(--accent) 42%,transparent),transparent 68%),
+    radial-gradient(52% 44% at 98% 4%,
+      color-mix(in srgb,var(--hue2) 38%,transparent),transparent 68%),
+    radial-gradient(66% 50% at 80% 98%,
+      color-mix(in srgb,var(--hue3) 28%,transparent),transparent 70%),
+    radial-gradient(48% 42% at 2% 86%,
+      color-mix(in srgb,var(--hue4) 24%,transparent),transparent 70%),
+    var(--bg)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  opacity:.5;
+  background-image:
+    linear-gradient(to right,var(--rule) 1px,transparent 1px),
+    linear-gradient(to bottom,var(--rule) 1px,transparent 1px);
+  background-size:92px 92px;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0,rgba(0,0,0,.35) 46%,transparent 78%);
+  mask-image:linear-gradient(to bottom,#000 0,rgba(0,0,0,.35) 46%,transparent 78%)}
+
+/* Grain. An SVG turbulence, one tile, tiled by the compositor. */
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.038;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+  background-size:160px 160px}
+
+/* ── Navigation ─────────────────────────────────────────── */
+.nav{position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  border-bottom:1px solid var(--rule)}
+/* A hairline in the app's own colour along the top of every page, so a
+   reader who has jumped in from a search knows which of the four they
+   are looking at before they have read a word. */
+.nav::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--hue2) 40%,
+    var(--hue3) 70%,var(--hue4))}
+@media (min-width:900px) and (hover:hover){
+  .nav{background:color-mix(in srgb,var(--bg) 66%,transparent);
+    backdrop-filter:saturate(170%) blur(20px);
+    -webkit-backdrop-filter:saturate(170%) blur(20px)}
+}
+.nav .wrap{display:flex;align-items:center;gap:26px;height:76px}
+/* The wordmark is the company, not the app, so it does not take the app's
+   display face — it looked like a different company on every page. One face,
+   one weight, tracked in tight, everywhere. */
+.nav .brand{display:inline-flex;align-items:center;gap:11px;
+  font-family:"Space Grotesk",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-weight:700;letter-spacing:-.021em;
+  font-size:23px;
+  color:var(--ink);letter-spacing:-.02em;white-space:nowrap}
+/* Ten apps do not fit in a row: at 1280 px the names ran off the right-hand
+   edge and the whole page scrolled sideways, and below 900 px they were
+   hidden with no way between apps at all. So they sit in a menu, the same
+   shape as the language one, at every width. */
+.nav .links{margin-left:auto;display:flex;gap:12px;font-size:15px;align-items:center}
+.nav .links a{color:var(--soft);white-space:nowrap;position:relative}
+.nav .links a[aria-current]{color:var(--ink);font-weight:600}
+.appmenu .menu{min-width:220px}
+.lang summary .globe{display:none;width:17px;height:17px}
+/* On a phone the wordmark keeps its size; the language button gives up its
+   word for a globe instead, which is what fits beside "Apps" at 375 px. */
+@media(max-width:520px){
+  .nav .wrap{gap:14px}
+  .nav .links{gap:8px}
+  .lang summary{padding:7px 10px}
+  .lang:not(.appmenu) summary .lname{display:none}
+  .lang summary .globe{display:block}
+}
+
+.lang{position:relative}
+.lang summary{list-style:none;cursor:pointer;color:var(--soft);font-size:15px;
+  display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;
+  border:1px solid var(--line);background:color-mix(in srgb,var(--card) 82%,transparent)}
+.lang summary::-webkit-details-marker{display:none}
+.lang summary::after{content:"";width:6px;height:6px;border-right:1.6px solid currentColor;
+  border-bottom:1.6px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+.lang[open] summary{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+.lang .menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--card);
+  border:1px solid var(--line);border-radius:16px;box-shadow:var(--lift-3);
+  padding:7px;min-width:190px;display:grid;gap:1px;z-index:30}
+.lang .menu a{display:block;padding:9px 13px;border-radius:11px;color:var(--soft);
+  font-size:15px}
+.lang .menu a:hover{background:var(--panel);text-decoration:none;color:var(--ink)}
+.lang .menu a[aria-current]{color:var(--accent-ink);font-weight:600;background:var(--accent-soft)}
+
+/* ── Hero ───────────────────────────────────────────────── */
+.app-id{display:flex;align-items:center;gap:clamp(14px,2vw,22px);margin:0 0 26px}
+.app-icon{width:clamp(76px,9vw,112px);height:auto;aspect-ratio:1;border-radius:22.4%;
+  box-shadow:0 1px 1px rgba(0,0,0,.12),0 14px 28px -10px rgba(0,0,0,.35),
+    0 0 0 .5px rgba(0,0,0,.08);flex:0 0 auto}
+.app-name{font-family:var(--display);font-weight:800;letter-spacing:-.035em;
+  font-size:clamp(2.1rem,4.8vw,3.5rem);line-height:1;color:var(--ink);margin:0}
+.app-role{margin:8px 0 0;font-size:clamp(.95rem,1.4vw,1.1rem);font-weight:600;
+  color:var(--accent-ink);letter-spacing:.01em}
+.hero{position:relative;padding:clamp(56px,9vw,104px) 0 clamp(40px,6vw,72px)}
+.hero .wrap{position:relative}
+.aurora{display:none}          /* the background is the page's now, not the hero's */
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);
+  background:color-mix(in srgb,var(--card) 70%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+  padding:7px 15px;border-radius:999px;margin:0 0 26px}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+h1{font-size:clamp(2.2rem,5.2vw,3.9rem);line-height:1.03;margin:0 0 24px;max-width:17ch;
+  letter-spacing:-.04em}
+.lede{font-size:clamp(1.08rem,1.7vw,1.3rem);line-height:1.58;color:var(--soft);
+  margin:0 0 28px;max-width:46ch}
+.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(32px,5vw,68px);
+  align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:38px}}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin:0}
+.chip{font-size:13.5px;color:var(--soft);
+  background:color-mix(in srgb,var(--card) 52%,transparent);
+  border:1px solid color-mix(in srgb,#fff 72%,transparent);
+  border-radius:999px;padding:7px 14px;
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 75%,transparent) inset;
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%)}
+.chip.on{background:var(--accent-soft);
+  border-color:color-mix(in srgb,var(--accent) 26%,transparent);
+  color:var(--accent-ink);font-weight:600}
+
+/* ── A screen, straight on, on a plinth ───────────────────────────
+   The screenshot is the product. It is shown the way the product is
+   actually looked at — flat, square to the reader, at a size where the
+   type inside it can be read — and it is seated rather than floating:
+   a tinted slab behind it and a soft contact shadow beneath, so it has
+   somewhere to be.
+   ──────────────────────────────────────────────────────────────── */
+.stage{position:relative;display:grid;place-items:center;padding:8px 0 34px}
+/* The tray, in glass.
+   A translucent plate that blurs the field of light behind it, with a bright
+   rim along the top edge where the light catches and a coloured bloom
+   underneath. It is the same idea as the material inside the phone: you can
+   see it is a surface because you can see through it. */
+.stage .behind{position:absolute;left:50%;top:6%;width:min(400px,94%);height:94%;
+  transform:translateX(-50%);border-radius:calc(var(--r-lg) + 20px);
+  background:linear-gradient(165deg,
+    color-mix(in srgb,#fff 62%,transparent),
+    color-mix(in srgb,#fff 30%,transparent) 46%,
+    color-mix(in srgb,var(--accent) 12%,transparent));
+  border:0.5px solid color-mix(in srgb,#fff 60%,transparent);
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 85%,transparent) inset,
+             0 -1px 0 color-mix(in srgb,var(--ink) 5%,transparent) inset,
+             0 30px 70px color-mix(in srgb,var(--ink) 13%,transparent);
+  backdrop-filter:blur(26px) saturate(150%);
+  -webkit-backdrop-filter:blur(26px) saturate(150%)}
+/* The bloom the tray sits in. Painted once, never repainted. */
+.stage::before{content:"";position:absolute;left:50%;top:14%;
+  width:min(560px,120%);height:80%;transform:translateX(-50%);
+  border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(50% 50% at 50% 50%,
+    color-mix(in srgb,var(--accent) 40%,transparent),transparent 68%);
+  opacity:.38}
+.stage .floor{position:absolute;left:50%;bottom:8px;width:min(330px,74%);height:34px;
+  transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(50% 50% at 50% 50%,
+    color-mix(in srgb,var(--ink) 20%,transparent),transparent 70%);
+  filter:blur(2px)}
+.hero-shot,.stage .device{position:relative;margin:0;z-index:2;
+  width:min(330px,80%)}
+.hero-shot img,.stage .device img{border-radius:var(--r-lg);
+  border:0.5px solid color-mix(in srgb,var(--ink) 10%,transparent);
+  box-shadow:0 1px 2px rgba(28,22,16,.05),0 22px 48px rgba(28,22,16,.16)}
+
+/* ── Sections ───────────────────────────────────────────── */
+section{padding:clamp(56px,7.5vw,96px) 0}
+section+section{border-top:1px solid var(--rule)}
+
+/* A sheet, for the parts of the page that really are a separate thing.
+   Inset from the page rather than bled to its edges, so the background
+   stays visible down both sides and the page keeps a margin. */
+.band{border-top:0;border-bottom:0;background:none;padding:clamp(18px,3vw,34px) 0}
+.band>.wrap{background:color-mix(in srgb,var(--card) 88%,transparent);
+  border:1px solid var(--line);border-radius:clamp(20px,3vw,34px);
+  padding:clamp(38px,5.5vw,72px) clamp(24px,4vw,56px);
+  box-shadow:var(--lift-1)}
+@media (min-width:900px) and (hover:hover){
+  .band>.wrap{background:color-mix(in srgb,var(--card) 72%,transparent);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+}
+section+section.band{border-top:0}
+.band+section{border-top:0}
+
+h2{font-size:clamp(1.85rem,3.5vw,2.75rem);line-height:1.1;margin:0 0 16px;max-width:20ch;
+  letter-spacing:-.032em}
+h3{font-size:1.17rem;line-height:1.32;margin:0 0 8px}
+p{margin:0 0 18px;color:var(--soft)}
+p.big{font-size:1.1rem}
+.kicker{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:700;
+  letter-spacing:.17em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+.kicker::after{content:"";flex:1;height:1px;background:var(--rule);max-width:80px}
+.section-lede{font-size:1.06rem;max-width:56ch;margin:0 0 36px}
+ul{padding-left:22px;margin:0 0 18px}
+li{margin:8px 0;color:var(--soft)}
+li strong,p strong{color:var(--ink);font-weight:600}
+
+/* ── The numbers ─────────────────────────────────────────────────
+   Not a boxed grid any more. Four figures on the page, separated by
+   hairlines, the way a set of figures is set in print.
+   ──────────────────────────────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:0;background:none;border:0;border-radius:0;overflow:visible}
+.stats div{background:none;padding:6px clamp(18px,3vw,34px) 6px 0;position:relative}
+.stats div+div{padding-left:clamp(18px,3vw,34px)}
+.stats div+div::before{content:"";position:absolute;left:0;top:6px;bottom:6px;
+  width:1px;background:var(--rule)}
+@media(max-width:640px){
+  .stats div+div{padding-left:0;padding-top:22px;margin-top:22px}
+  .stats div+div::before{left:0;right:0;top:0;bottom:auto;width:auto;height:1px}
+}
+.stats .n{font-family:var(--display);font-size:clamp(2.4rem,5vw,3.4rem);line-height:.95;
+  color:var(--accent);display:block;margin-bottom:12px;letter-spacing:-.045em}
+.stats .l{font-size:14px;color:var(--faint);line-height:1.45;max-width:24ch}
+.nav .brand .mark{flex:0 0 auto;color:var(--accent);transition:transform .35s cubic-bezier(.2,.7,.3,1)}
+.nav .brand:hover .mark{transform:translateY(-2px)}
+footer .mark{vertical-align:-5px;margin-right:6px;color:var(--accent)}
+
+/* ── The entrance ─────────────────────────────────────────
+   Three screens standing in a room rather than lying on a page.
+
+   WHAT WAS WRONG WITH THE FIRST VERSION
+
+   It only moved on hover. A phone has no hover, so on the device most people
+   read this on, nothing happened at all — three tilted pictures and no
+   entrance. And on a desktop it moved only if the pointer happened to land
+   on it, which is not an animation, it is an easter egg.
+
+   Now the movement is tied to the scroll: the panes swing in from flat as the
+   section rises into view and settle as it reaches the middle of the screen.
+   That works on a phone, on a trackpad, on a scroll wheel and on a keyboard,
+   because all of those scroll. It is done with `animation-timeline: view()`,
+   which needs no JavaScript at all; where a browser does not have it, the
+   panes are simply drawn in their settled position, which is the picture the
+   animation was arriving at anyway. */
+.entrance{padding:clamp(34px,7vw,86px) 0;overflow:hidden}
+.depth{perspective:1500px;perspective-origin:50% 42%;
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(8px,2.6vw,40px);transform-style:preserve-3d}
+.entrance .pane{position:relative;margin:0;border-radius:var(--r-lg);
+  overflow:hidden;width:clamp(140px,21vw,248px);flex:0 0 auto;
+  background:var(--card);transform-style:preserve-3d}
+.entrance .pane img{display:block;width:100%;height:auto}
+
+/* Where they come to rest. */
+.entrance .left{transform:rotateY(34deg) translateZ(-90px) translateX(4%)}
+.entrance .mid{transform:translateZ(46px);z-index:2;
+  box-shadow:0 44px 96px -30px rgba(0,0,0,.55),0 4px 14px rgba(0,0,0,.14)}
+.entrance .right{transform:rotateY(-34deg) translateZ(-90px) translateX(-4%)}
+
+/* The two at the sides are lit from the middle, which is where the light in
+   this scene comes from. */
+.entrance .left::after,.entrance .right::after{content:"";position:absolute;
+  inset:0;pointer-events:none}
+.entrance .left::after{background:linear-gradient(90deg,rgba(0,0,0,.34),transparent 62%)}
+.entrance .right::after{background:linear-gradient(270deg,rgba(0,0,0,.34),transparent 62%)}
+
+@supports (animation-timeline: view()) {
+  .entrance .pane{animation:linear both;animation-timeline:view();
+    animation-range:entry 8% cover 46%}
+  .entrance .left{animation-name:pane-left}
+  .entrance .mid{animation-name:pane-mid}
+  .entrance .right{animation-name:pane-right}
+}
+@keyframes pane-left{
+  from{transform:rotateY(72deg) translateZ(-220px) translateX(26%);opacity:0}
+  to  {transform:rotateY(34deg) translateZ(-90px)  translateX(4%); opacity:1}
+}
+@keyframes pane-mid{
+  from{transform:translateZ(-180px) scale(.86);opacity:0}
+  to  {transform:translateZ(46px)   scale(1);  opacity:1}
+}
+@keyframes pane-right{
+  from{transform:rotateY(-72deg) translateZ(-220px) translateX(-26%);opacity:0}
+  to  {transform:rotateY(-34deg) translateZ(-90px)  translateX(-4%); opacity:1}
+}
+
+@media (max-width:640px){
+  .depth{perspective:900px;gap:5px}
+  .entrance .left{transform:rotateY(42deg) translateZ(-70px)}
+  .entrance .right{transform:rotateY(-42deg) translateZ(-70px)}
+  @keyframes pane-left{
+    from{transform:rotateY(74deg) translateZ(-160px);opacity:0}
+    to  {transform:rotateY(42deg) translateZ(-70px); opacity:1}
+  }
+  @keyframes pane-right{
+    from{transform:rotateY(-74deg) translateZ(-160px);opacity:0}
+    to  {transform:rotateY(-42deg) translateZ(-70px); opacity:1}
+  }
+}
+
+/* Movement of this kind is a headache for some people, and a scroll-driven
+   one cannot be escaped by not scrolling. Off entirely. */
+@media (prefers-reduced-motion:reduce){
+  .entrance .pane{animation:none !important;opacity:1}
+}
+
+/* ── Feature rows ───────────────────────────────────────── */
+.feature{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);
+  align-items:center;padding:clamp(34px,5vw,58px) 0}
+.feature+.feature{border-top:1px solid var(--rule)}
+.feature .shot{margin:0;justify-self:center;width:min(290px,86%);position:relative}
+.feature .shot::before{content:"";position:absolute;left:50%;top:-7px;
+  width:calc(100% + 20px);height:calc(100% + 14px);transform:translateX(-50%);
+  border-radius:calc(var(--r-lg) + 8px);
+  background:linear-gradient(160deg,
+    color-mix(in srgb,var(--accent) 11%,var(--card)),
+    color-mix(in srgb,var(--hue3) 8%,var(--card)));
+  border:0.5px solid color-mix(in srgb,var(--accent) 14%,transparent)}
+.feature .shot img{position:relative;border-radius:var(--r-lg);
+  border:0.5px solid color-mix(in srgb,var(--ink) 10%,transparent);
+  box-shadow:0 1px 2px rgba(28,22,16,.05),0 16px 36px rgba(28,22,16,.13)}
+.feature:nth-child(even) .copy{order:2}
+@media(max-width:860px){.feature{grid-template-columns:1fr;gap:34px}
+  .feature:nth-child(even) .copy{order:0}
+  .feature .shot{width:min(260px,80%)}}
+
+/* ── The walk-through ───────────────────────────────────── */
+.steps{counter-reset:step;display:grid;gap:0}
+.step{display:grid;grid-template-columns:64px 1fr;gap:24px;
+  padding:26px 0;align-items:start}
+.step+.step{border-top:1px solid var(--rule)}
+.step .n{counter-increment:step;width:46px;height:46px;border-radius:14px;
+  background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;
+  font-family:var(--display);font-weight:700;font-size:17px;
+  border:1px solid color-mix(in srgb,var(--accent) 16%,transparent)}
+.step .n::before{content:counter(step,decimal-leading-zero)}
+.step h3{margin-bottom:6px}
+.step p{margin:0;font-size:16px;max-width:62ch}
+@media(max-width:560px){.step{grid-template-columns:1fr;gap:14px}}
+
+/* ── Cards ──────────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:18px}
+.card{background:color-mix(in srgb,var(--card) 62%,transparent);
+  border:1px solid color-mix(in srgb,#fff 70%,transparent);
+  border-radius:var(--r);padding:28px 26px;
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 80%,transparent) inset,var(--lift-1);
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.card:hover{transform:translateY(-3px);box-shadow:var(--lift-2)}
+.card p:last-child{margin-bottom:0}
+.card .mark{width:38px;height:38px;border-radius:12px;background:var(--accent-soft);
+  color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:14px;
+  margin-bottom:18px;font-family:var(--display);
+  border:1px solid color-mix(in srgb,var(--accent) 16%,transparent)}
+
+/* ── Price ──────────────────────────────────────────────── */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:800px){.plans{grid-template-columns:1fr}}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:30px 28px;box-shadow:var(--lift-1);position:relative}
+.plan.best{border-color:color-mix(in srgb,var(--accent) 42%,transparent);
+  box-shadow:var(--lift-2)}
+.plan .badge{position:absolute;top:-11px;left:28px;background:var(--accent);color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  padding:5px 12px;border-radius:999px}
+.plan .t{font-family:var(--display);font-size:1.13rem;margin:0 0 6px;color:var(--ink)}
+.plan .p{font-family:var(--display);font-size:2.4rem;line-height:1;color:var(--accent);
+  letter-spacing:-.04em;margin:0 0 4px}
+.plan .cur{font-size:1rem;color:var(--faint);letter-spacing:0}
+.plan .d{font-size:15px;margin:10px 0 0}
+.plan .free{font-size:13.5px;color:var(--accent-ink);background:var(--accent-soft);
+  display:inline-block;padding:5px 11px;border-radius:999px;margin-top:14px;font-weight:600}
+
+/* ── Questions ──────────────────────────────────────────── */
+.qa{border-top:1px solid var(--rule)}
+.qa details{border-bottom:1px solid var(--rule)}
+.qa summary{cursor:pointer;list-style:none;padding:24px 56px 24px 0;
+  font-family:var(--display);font-weight:700;font-size:1.08rem;
+  color:var(--ink);position:relative;letter-spacing:-.02em}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"";position:absolute;right:8px;top:31px;width:9px;height:9px;
+  border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);
+  transform:rotate(45deg);transition:transform .18s ease}
+.qa details[open] summary::after{transform:rotate(-135deg);top:35px}
+.qa summary:hover{color:var(--accent-ink)}
+.qa .a{padding:0 40px 26px 0}
+.qa .a p{margin:0 0 12px;font-size:16px;max-width:66ch}
+.qa .a p:last-child{margin:0}
+
+/* ── Prose blocks ───────────────────────────────────────── */
+.prose h3{margin:38px 0 8px}
+.prose h3:first-child{margin-top:0}
+.note{background:color-mix(in srgb,var(--card) 70%,transparent);
+  border:1px solid var(--line);border-radius:var(--r);padding:26px 28px;margin:26px 0}
+.note p:last-child{margin-bottom:0}
+.callout{background:var(--accent-soft);
+  border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+  border-radius:var(--r);padding:26px 28px;margin:26px 0}
+.callout .h{font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 12px}
+.callout p{color:var(--accent-ink)}
+.callout p:last-child{margin-bottom:0}
+.facts{width:100%;border-collapse:collapse;font-size:16px;margin-top:8px}
+.facts td{padding:17px 18px 17px 0;border-bottom:1px solid var(--rule);color:var(--soft);
+  vertical-align:top}
+.facts tr:last-child td{border-bottom:0}
+.facts td:first-child{color:var(--ink);font-weight:600;width:36%}
+.date{font-size:14px;color:var(--faint);margin:-4px 0 26px}
+/* Support and privacy: the App Store asks for both, so both are here — folded,
+   so they do not stand between somebody and the app. A link to #privacy or
+   #support opens its fold by itself. */
+.legal .fold{border-top:1px solid var(--line);padding:6px 0}
+.legal .fold:last-child{border-bottom:1px solid var(--line)}
+.legal .fold summary{list-style:none;cursor:pointer;display:flex;align-items:center;
+  justify-content:space-between;padding:14px 0}
+.legal .fold summary::-webkit-details-marker{display:none}
+.legal .fold summary h2{font-size:clamp(1.25rem,2.2vw,1.55rem);margin:0}
+.legal .fold summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--soft);
+  border-bottom:2px solid var(--soft);transform:rotate(45deg);transition:transform .2s ease;margin-right:6px}
+.legal .fold[open] summary::after{transform:rotate(-135deg)}
+.legal .fold > :not(summary){animation:fold .25s ease}
+@keyframes fold{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.quiet{font-size:13.5px;color:var(--faint);line-height:1.6}
+.quiet a{color:var(--faint);text-decoration:underline}
+
+/* ── The four apps, on the front page ───────────────────── */
+.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media(max-width:720px){.apps{grid-template-columns:1fr}}
+.app{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;box-shadow:var(--lift-1);
+  transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.app:hover{transform:translateY(-4px);box-shadow:var(--lift-2);text-decoration:none}
+.app .stripe{height:5px}
+/* A window onto the top of the app's own screen. Cropped rather than
+   scaled: the whole of a 6.9-inch screenshot shrunk into a card is a grey
+   smudge, and the top third is the part that says what the app is. */
+.app .peek{height:190px;overflow:hidden;position:relative;
+  border-bottom:1px solid var(--line)}
+.app .peek img{width:78%;margin:26px auto 0;border-radius:16px 16px 0 0;
+  border:1px solid color-mix(in srgb,var(--ink) 8%,transparent);border-bottom:0;
+  box-shadow:0 -1px 0 rgba(255,255,255,.6) inset,0 14px 30px rgba(28,22,16,.16);
+  object-fit:cover;object-position:top;height:auto;
+  transition:transform .3s cubic-bezier(.2,.7,.3,1)}
+.app:hover .peek img{transform:translateY(-8px)}
+.app .in{padding:26px 30px 30px}
+.app .tag{font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  margin:4px 0 0}
+.app h3{color:var(--ink);margin:0;font-size:1.65rem;letter-spacing:-.02em;line-height:1.1}
+.tile-id{display:flex;align-items:center;gap:14px;margin:0 0 14px}
+.tile-icon{width:64px;height:64px;border-radius:22.4%;flex:0 0 auto;
+  box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 20px -8px rgba(0,0,0,.3),0 0 0 .5px rgba(0,0,0,.08)}
+.app p{font-size:15px;margin:0 0 16px}
+.app .from{font-size:13.5px;color:var(--faint);margin:0}
+
+footer{border-top:1px solid var(--rule);padding:48px 0 76px;color:var(--faint);
+  font-size:14.5px}
+footer p{color:var(--faint);margin:0 0 8px}
+footer a{color:var(--faint);text-decoration:underline}
+footer .marks{margin-top:18px;font-size:11.5px;line-height:1.55;max-width:760px;opacity:.85}
+
+/* ── The gallery ────────────────────────────────────────────────
+   A strip of screens that scrolls sideways, snapping to each one. Full
+   bleed, because a rail that stops at the page margin looks like it ran
+   out rather than like it continues — and continuing is the point: there
+   is more of this app than fits on a screen.
+   ──────────────────────────────────────────────────────────────── */
+.strip{margin-top:38px;overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding:10px 0 28px}
+.strip::-webkit-scrollbar{display:none}
+/* The gap is larger than twice the plate's overhang, so two plates can
+   never touch however narrow the window gets. That was the fault: a plate
+   17px wider on each side inside a 14px gap overlapped its neighbour by
+   twenty. */
+.rail{display:flex;gap:clamp(28px,3.4vw,44px);width:max-content;
+  padding:0 max(var(--gutter),calc((100vw - 1180px) / 2 + var(--gutter)))}
+.frame{margin:0;flex:0 0 auto;width:clamp(190px,42vw,258px);
+  scroll-snap-align:center;position:relative}
+/* The tinted plate each screen sits on, the same idea as the hero's tray —
+   a hairline rather than a border, and close to the screen rather than a
+   frame around it. */
+.frame::before{content:"";position:absolute;left:50%;top:-6px;
+  width:calc(100% + 20px);height:calc(100% + 14px);transform:translateX(-50%);
+  border-radius:calc(var(--r-lg) + 8px);
+  background:linear-gradient(165deg,
+    color-mix(in srgb,#fff 52%,transparent),
+    color-mix(in srgb,var(--accent) 10%,transparent));
+  border:0.5px solid color-mix(in srgb,#fff 55%,transparent);
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 70%,transparent) inset,
+             0 14px 32px color-mix(in srgb,var(--ink) 9%,transparent)}
+.frame img{position:relative;border-radius:var(--r-lg);
+  border:0.5px solid color-mix(in srgb,var(--ink) 10%,transparent);
+  box-shadow:0 1px 2px rgba(28,22,16,.05),0 12px 28px rgba(28,22,16,.13)}
+
+/* ── The moment ─────────────────────────────────────────────────
+   One sentence, set as large as the page can carry it. It names the
+   situation somebody is in when they reach for the app. Everything
+   below it is detail; this is the only line that has to land.
+   ──────────────────────────────────────────────────────────────── */
+.moment{padding:clamp(60px,8vw,104px) 0}
+.moment p{font-family:var(--display);font-weight:700;
+  font-size:clamp(28px,4.4vw,52px);line-height:1.14;letter-spacing:-.038em;
+  max-width:19ch;margin:0}
+.moment .after{font-family:var(--body);font-weight:400;font-size:19px;
+  line-height:1.62;color:var(--soft);max-width:54ch;margin:26px 0 0;
+  padding-left:20px;border-left:2px solid color-mix(in srgb,var(--accent) 40%,transparent)}
+
+/* ── Worked examples ────────────────────────────────────────────
+   Three finished documents with the figures visible. A number on a page
+   can be checked; "professional quotations" cannot, and everybody says it.
+   ──────────────────────────────────────────────────────────────── */
+.examples{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+@media(max-width:900px){.examples{grid-template-columns:1fr}}
+.example{background:color-mix(in srgb,var(--card) 66%,transparent);
+  border:1px solid color-mix(in srgb,#fff 70%,transparent);
+  border-radius:var(--r);padding:28px 26px;
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 80%,transparent) inset,var(--lift-1);
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  display:flex;flex-direction:column}
+.example .trade{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent);font-weight:700;margin:0 0 12px}
+.example h3{font-size:1.2rem;margin:0 0 4px}
+.example .who{color:var(--faint);font-size:14px;margin:0 0 20px}
+.example ul{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:10px}
+.example li{display:flex;gap:12px;font-size:15px;color:var(--soft);
+  border-bottom:1px dashed var(--rule);padding-bottom:10px}
+.example li span:first-child{flex:1}
+.example li span:last-child{font-variant-numeric:tabular-nums;color:var(--ink);
+  white-space:nowrap}
+.example .total{margin-top:auto;display:flex;flex-direction:column;gap:4px;
+  padding-top:16px;border-top:2px solid var(--ink)}
+.example .total span:first-child{font-size:11.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--faint);font-weight:700;line-height:1.35}
+.example .total span:last-child{font-family:var(--display);
+  font-weight:700;font-size:1.8rem;letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.example .made{font-size:13px;color:var(--faint);margin:14px 0 0}
+
+/* ── What it replaces ───────────────────────────────────── */
+.compare{width:100%;border-collapse:separate;border-spacing:0;margin-top:30px;
+  table-layout:fixed;border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;background:var(--card);font-size:15.5px}
+.compare th,.compare td{padding:16px 18px;text-align:left;
+  border-bottom:1px solid var(--rule)}
+.compare tr:last-child th,.compare tr:last-child td{border-bottom:0}
+.compare thead th{background:color-mix(in srgb,var(--panel) 70%,transparent);
+  font-family:var(--display);font-weight:700;font-size:13.5px;
+  letter-spacing:.02em}
+.compare th{color:var(--ink);font-weight:600;width:26%}
+.compare td{width:37%;color:var(--soft)}
+.compare .yes{width:37%;color:var(--accent-ink);font-weight:600;
+  background:color-mix(in srgb,var(--accent) 5%,transparent)}
+@media(max-width:700px){
+  .compare,.compare tbody,.compare tr,.compare th,.compare td{display:block;width:auto}
+  .compare{border:0;background:none;overflow:visible}
+  .compare thead{position:absolute;left:-9999px}
+  .compare tbody tr{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);padding:18px 20px;margin-bottom:14px}
+  .compare tbody tr:last-child{margin-bottom:0}
+  .compare tbody th{padding:0 0 10px;font-size:16px;border-bottom:0}
+  .compare tbody td{padding:0;border-bottom:0;font-size:15px;background:none}
+  /* `.compare .yes` sets a width and a tint for the desktop table and is
+     more specific than `.compare td`, so both survived into the blocks: the
+     answer that matters most wrapped two words to a line inside a coloured
+     rectangle half the width of the card. */
+  .compare tbody td.yes{width:auto;background:none;color:var(--accent-ink)}
+  .compare tbody td+td{margin-top:14px}
+  .compare tbody td::before{content:attr(data-label);display:block;
+    margin-bottom:3px;font-size:11px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--faint);font-weight:700}
+}
+
+/* ── The one thing the page asks for ────────────────────── */
+.cta-card{position:relative;overflow:hidden;text-align:center;
+  border-radius:clamp(24px,4vw,40px);padding:clamp(46px,7vw,72px) clamp(24px,4vw,44px);
+  background:linear-gradient(155deg,
+    color-mix(in srgb,var(--accent) 13%,var(--card)),
+    color-mix(in srgb,var(--hue2) 11%,var(--card)) 52%,
+    color-mix(in srgb,var(--hue4) 10%,var(--card)));
+  border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+  box-shadow:var(--lift-2)}
+.cta-glow{position:absolute;left:50%;top:-52%;width:74%;height:96%;
+  transform:translateX(-50%);pointer-events:none;opacity:.7;
+  background:radial-gradient(50% 50% at 50% 50%,
+    color-mix(in srgb,var(--hue2) 45%,transparent),transparent 70%)}
+.cta-card>*{position:relative}
+.cta-badge{display:inline-block;font-size:11.5px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;color:#fff;
+  background:linear-gradient(100deg,var(--accent),var(--hue4));
+  padding:7px 16px;border-radius:999px;margin:0 0 22px}
+.cta-card h2{margin:0 auto 16px;max-width:19ch}
+.cta-lede{font-size:1.08rem;max-width:52ch;margin:0 auto 32px}
+.cta-note{max-width:56ch;margin:24px auto 0}
+.store-button{position:relative;display:inline-block;font-size:1.02rem;
+  font-weight:600;color:#fff;overflow:hidden;
+  background:linear-gradient(100deg,var(--accent),var(--hue4));
+  padding:17px 38px;border-radius:999px;text-decoration:none;
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 45%,transparent) inset,
+             0 10px 28px color-mix(in srgb,var(--accent) 32%,transparent);
+  transition:transform .18s ease,box-shadow .18s ease}
+/* The specular line across the top, which is what makes a capsule read as
+   something with a surface rather than a coloured rectangle. */
+.store-button::before{content:"";position:absolute;inset:0 0 auto;height:50%;
+  border-radius:999px 999px 40% 40%;pointer-events:none;
+  background:linear-gradient(to bottom,
+    color-mix(in srgb,#fff 28%,transparent),transparent)}
+.store-button:hover{text-decoration:none;transform:translateY(-2px);
+  box-shadow:0 16px 36px color-mix(in srgb,var(--accent) 38%,transparent)}
+.store-button.soon{background:color-mix(in srgb,var(--card) 80%,transparent);
+  color:var(--soft);
+  border:1px dashed color-mix(in srgb,var(--accent) 40%,transparent);
+  box-shadow:none;cursor:default}
+.store-button.soon:hover{transform:none;box-shadow:none}
+
+/* Each figure in the app's own spread of colour. */
+.stats div:nth-child(2) .n{color:var(--hue2)}
+.stats div:nth-child(3) .n{color:var(--hue3)}
+.stats div:nth-child(4) .n{color:var(--hue4)}
+.step:nth-child(4n+2) .n{background:color-mix(in srgb,var(--hue2) 15%,transparent);
+  color:var(--hue2);border-color:color-mix(in srgb,var(--hue2) 20%,transparent)}
+.step:nth-child(4n+3) .n{background:color-mix(in srgb,var(--hue3) 15%,transparent);
+  color:var(--hue3);border-color:color-mix(in srgb,var(--hue3) 20%,transparent)}
+.step:nth-child(4n+4) .n{background:color-mix(in srgb,var(--hue4) 15%,transparent);
+  color:var(--hue4);border-color:color-mix(in srgb,var(--hue4) 20%,transparent)}
+.card:nth-child(3n+2) .mark{background:color-mix(in srgb,var(--hue2) 14%,transparent);
+  color:var(--hue2);border-color:color-mix(in srgb,var(--hue2) 18%,transparent)}
+.card:nth-child(3n+3) .mark{background:color-mix(in srgb,var(--hue3) 14%,transparent);
+  color:var(--hue3);border-color:color-mix(in srgb,var(--hue3) 18%,transparent)}
+h1 .glow{background:linear-gradient(96deg,var(--accent),var(--hue2) 55%,var(--hue4));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+
+
+/* ── Coming into view ────────────────────────────────────────
+   Scroll-driven animation, done by the browser rather than by
+   JavaScript watching a scroll event. `animation-timeline: view()`
+   ties the animation's progress to where the element sits in the
+   viewport, so it is smooth at any scroll speed, costs no main
+   thread, and cannot jitter — which is the whole problem with the
+   IntersectionObserver approach everybody used before it.
+
+   The movement is deliberately small. A section rises eight
+   pixels, comes forward out of the page, and settles. What makes
+   it read as depth rather than as a slide is the perspective: the
+   element starts rotated a degree and a half about its own
+   horizontal axis, as though lying back, and comes upright as it
+   arrives. One and a half degrees is not something anybody
+   consciously sees, and it is the difference between a page that
+   feels like paper and one that feels like a stack of glass.
+
+   Browsers without it show the finished state, which is the
+   correct fallback: the content was never hidden, it simply does
+   not animate. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Not the hero's phone: it is the first thing on the page and must be
+       crisp from the first frame, not half-faded until the page scrolls. */
+    section > .wrap, .band > .wrap, .card, .app {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 34%;
+      transform-origin: 50% 100%;
+    }
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: perspective(1400px) translateY(14px) translateZ(-26px)
+                   rotateX(1.6deg) scale(.988);
+      }
+      to {
+        opacity: 1;
+        transform: perspective(1400px) translateY(0) translateZ(0)
+                   rotateX(0) scale(1);
+      }
+    }
+
+    /* The screenshots run the other way: they hold still while the
+       page moves past, then drift up a little as they leave. It is
+       the parallax a shop window has when you walk past it, and it
+       is what stops a long strip of phones feeling like a
+       spreadsheet. */
+    .rail .frame {
+      animation: drift linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% exit 100%;
+    }
+    @keyframes drift {
+      from { transform: perspective(1200px) translateY(10px) rotateX(1.1deg); }
+      50%  { transform: perspective(1200px) translateY(0) rotateX(0); }
+      to   { transform: perspective(1200px) translateY(-10px) rotateX(-1.1deg); }
+    }
+  }
+}
+
+
+/* ── The phone ───────────────────────────────────────────────
+   Every screenshot sits in an iPhone: titanium band, black glass border,
+   the Dynamic Island, the buttons on both sides. A bare screenshot reads
+   as a picture of an app; the same pixels in a phone read as an app in
+   somebody's hand, which is the thing being sold.
+
+   All of it is drawn, nothing is an image, so it is sharp at any size
+   and costs no download. Radii are given as horizontal / vertical
+   percentages because a phone is twice as tall as it is wide.
+
+   The tilt is the viewer's: the phone turns towards the pointer (or the
+   finger), a highlight slides across the glass, and it settles back when
+   left alone. The variables are set by the small script at the foot of
+   the page; without it, every phone simply stands square. */
+.iphone{--rx:0deg;--ry:0deg;--sy:0deg;--gx:28%;--gy:0%;
+  position:relative;display:block;padding:2.35%;border-radius:16.6% / 7.75%;
+  /* Titanium: a brushed band, lit from the top left, darker at the waist. */
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.0) 0%,rgba(255,255,255,.35) 1.2%,rgba(255,255,255,0) 3%,
+                    rgba(255,255,255,0) 97%,rgba(255,255,255,.28) 98.8%,rgba(255,255,255,0) 100%),
+    linear-gradient(160deg,#eef0f2 0%,#b8bcc2 9%,#7d8188 22%,#4d5056 40%,#3c3f44 52%,
+                    #555960 66%,#8f949b 82%,#d5d8dc 94%,#f4f5f6 100%);
+  box-shadow:
+    inset 0 0 0 .6px rgba(255,255,255,.85),
+    inset 0 1.5px 1px rgba(255,255,255,.55),
+    inset 0 -1.5px 1.5px rgba(0,0,0,.35),
+    0 1px 1.5px rgba(0,0,0,.25),
+    0 22px 38px -16px rgba(12,14,20,.42),
+    0 60px 100px -46px rgba(12,14,20,.5),
+    0 90px 140px -70px color-mix(in srgb,var(--accent) 60%,transparent);
+  transform:perspective(1200px) rotateX(calc(var(--rx) + var(--sy))) rotateY(var(--ry));
+  /* Flat inside: a 3D context around a rounded, clipped screen is where
+     Chromium stops painting the picture and shows black. */
+  transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.iphone.live{transition:transform .12s linear}
+/* The black border round the display, between the metal and the pixels. */
+.iphone::before{content:"";position:absolute;inset:1.05%;border-radius:15.4% / 7.18%;
+  background:#030304;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+/* Antenna lines: the four short breaks in a real frame. */
+.iphone::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:
+    linear-gradient(#2a2c30,#2a2c30) left 0 top 11.5% / 1.1% .45% no-repeat,
+    linear-gradient(#2a2c30,#2a2c30) right 0 top 11.5% / 1.1% .45% no-repeat,
+    linear-gradient(#2a2c30,#2a2c30) left 0 bottom 11.5% / 1.1% .45% no-repeat,
+    linear-gradient(#2a2c30,#2a2c30) right 0 bottom 11.5% / 1.1% .45% no-repeat;
+  opacity:.55}
+.iphone .screen{display:block;position:relative;z-index:1;overflow:hidden;margin:1.25%;
+  border-radius:14.1% / 6.5%;background:#000;
+  box-shadow:0 0 0 .5px rgba(0,0,0,.9)}
+.iphone .screen img{display:block;width:100%;height:auto;border:0;border-radius:0;box-shadow:none}
+/* The Dynamic Island, the size and place of the real one. */
+.iphone .screen::before{content:"";position:absolute;z-index:3;left:50%;top:1.15%;
+  width:28.6%;height:3.9%;transform:translateX(-50%);border-radius:999px;
+  background:#000;box-shadow:inset 0 0 0 .8px rgba(255,255,255,.05)}
+/* Its camera: a dark lens with a little violet in it. */
+.iphone .screen::after{content:"";position:absolute;z-index:4;top:calc(1.15% + 1.95% - 1.05%);
+  left:calc(50% + 9.2%);width:2.1%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 36% 34%,#5a6aa8 0,#1d2340 38%,#06070b 70%)}
+/* Light on the glass: a fixed sweep, and a highlight that follows the pointer. */
+.iphone .glare{position:absolute;z-index:5;inset:3.6%;border-radius:14.1% / 6.5%;
+  pointer-events:none;
+  background:
+    linear-gradient(118deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.025) 22%,rgba(255,255,255,0) 34%),
+    radial-gradient(110% 60% at var(--gx) var(--gy),rgba(255,255,255,.1),rgba(255,255,255,.02) 30%,transparent 55%);
+  mix-blend-mode:screen}
+/* The buttons: Action button and volume on the left; the side button and
+   Camera Control on the right, where they are on an iPhone 17 Pro. */
+.iphone .btn{position:absolute;width:1.25%;border-radius:3px;z-index:-1;
+  background:linear-gradient(90deg,#44474c,#c9ccd1 45%,#6d7177 100%);
+  box-shadow:0 0 0 .5px rgba(0,0,0,.35)}
+.iphone .btn.action{left:-.95%;top:18.2%;height:3.9%}
+.iphone .btn.up{left:-.95%;top:25%;height:6.6%}
+.iphone .btn.down{left:-.95%;top:32.8%;height:6.6%}
+.iphone .btn.side{right:-.95%;top:26.6%;height:10%}
+.iphone .btn.control{right:-.7%;top:55.5%;height:6.4%;width:1%;
+  background:linear-gradient(90deg,#1b1c1f,#5b5f66 50%,#2b2d31)}
+
+/* The plates the phones used to sit on are the phone's job now. */
+.frame::before,.feature .shot::before{display:none}
+.hero-shot img,.stage .device img,.frame img,.feature .shot img,.entrance .pane img{
+  border:0;box-shadow:none;border-radius:0}
+.entrance .pane{background:transparent;overflow:visible;border-radius:0}
+.entrance .left::after,.entrance .right::after{border-radius:15.5% / 7.2%}
+
+/* The hero phone breathes, so a page that is only read on a phone —
+   where nothing hovers — still has something alive in it. */
+@media (prefers-reduced-motion:no-preference){
+  .stage .device{animation:breathe 7s ease-in-out infinite}
+  @keyframes breathe{0%,100%{translate:0 0}50%{translate:0 -9px}}
+}
+
+/* The gallery turns like a record rack: the phone in the middle faces
+   you, the ones either side swing away and step back. Set per frame by
+   the script from where it sits in the strip. */
+.rail{perspective:1400px}
+.rail .frame{animation:none;transform:rotateY(var(--cf-ry,0deg)) translateZ(var(--cf-z,0px))
+  scale(var(--cf-s,1));transition:transform .18s ease-out;transform-style:preserve-3d}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition-duration:.01ms !important;animation:none !important}
+}
+@media print{
+  .nav,.lang,.grain{display:none}
+  body::before,body::after{display:none}
+  section{padding:24px 0}
+  .band>.wrap{background:none;border:0;box-shadow:none;padding:0;backdrop-filter:none}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#main">跳到正文</a>
+<div class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true" focusable="false"><circle cx="22.6" cy="8.4" r="3.9" fill="var(--hue2)"/><path d="M2.4 27 L12.2 10.6 L17.4 19.2 L20.6 14.4 L29.6 27 Z" fill="currentColor"/><path d="M12.2 10.6 L15 15.3 L13.2 14.4 L11.4 15.9 L9.6 14.9 Z" fill="#fff" opacity=".92"/></svg><span>Alpenlume</span></a>
+  <nav class="links" aria-label="应用">
+    <details class="lang appmenu">
+      <summary>应用</summary>
+      <div class="menu">
+    <a href="fornela.html">Fornela</a>
+    <a href="talkquote.html" aria-current="page">Talkquote</a>
+    <a href="sharpfield-medium-format.html">Sharpfield MF</a>
+    <a href="sharpfield-full-frame.html">Sharpfield FF</a>
+      </div>
+    </details>
+    <details class="lang">
+      <summary aria-label="选择语言"><svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><span class="lname">简体中文</span></summary>
+      <div class="menu">
+        <a href="../talkquote.html" lang="en">English</a>
+        <a href="../de/talkquote.html" lang="de">Deutsch</a>
+        <a href="../fr/talkquote.html" lang="fr">Français</a>
+        <a href="../it/talkquote.html" lang="it">Italiano</a>
+        <a href="../es/talkquote.html" lang="es">Español</a>
+        <a href="../pl/talkquote.html" lang="pl">Polski</a>
+        <a href="../ru/talkquote.html" lang="ru">Русский</a>
+        <a href="../el/talkquote.html" lang="el">Ελληνικά</a>
+        <a href="../ja/talkquote.html" lang="ja">日本語</a>
+        <a href="talkquote.html" lang="zh" aria-current="true">简体中文</a>
+      </div>
+    </details>
+  </nav>
+</div></div>
+
+<main id="main">
+<div class="hero">
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <div class="wrap"><div class="hero-grid">
+  <div>
+    <div class="app-id">
+      <img class="app-icon" src="../img/icons/talkquote.png" alt="" width="112" height="112">
+      <div><p class="app-name">Talkquote</p>
+      <p class="app-role">工匠报价单</p></div>
+    </div>
+    <h1>说出这项工作需要什么，报价单自己写好。</h1>
+    <p class="lede">写给电工、水暖工、油漆工、木工、瓦工和包工头——在车里报价，而不是在办公桌前。离开现场前把活儿说一遍，Talkquote 就把它变成带单价的条目、总额，以及客户能看懂的 PDF。</p>
+    <div class="chips">
+      <span class="chip on">三天免费</span>
+      <span class="chip">支持 iPad 上的 Apple Pencil</span>
+      <span class="chip">iPhone 和 iPad</span><span class="chip">21 种语言</span><span class="chip">可离线使用</span><span class="chip">PDF、Word、Excel、CSV、纯文本</span>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="floor" aria-hidden="true"></div>
+    <div class="behind" aria-hidden="true"></div>
+    <figure class="hero-shot device">
+      <span class="iphone"><span class="screen"><img src="../img/talkquote-1.jpg" alt="Talkquote" width="390" height="844" fetchpriority="high" decoding="async"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+    </figure>
+  </div>
+</div></div></div>
+
+<section class="moment band"><div class="wrap">
+  <p>报价要么在车里做完，要么留到晚上十一点做。</p>
+  <p class="after">在现场说九十秒，你还没到家，客户手里已经有了文件。就这么简单。</p>
+</div></section>
+
+
+
+<section class="entrance" aria-hidden="true">
+  <div class="depth">
+    <figure class="pane left">
+      <span class="iphone"><span class="screen"><img src="../img/talkquote-2.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+    </figure>
+    <figure class="pane mid">
+      <span class="iphone"><span class="screen"><img src="../img/talkquote-1.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+    </figure>
+    <figure class="pane right">
+      <span class="iphone"><span class="screen"><img src="../img/talkquote-3.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+    </figure>
+  </div>
+</section>
+
+<section id="examples"><div class="wrap">
+  <h2>三份报价单，从头到尾</h2>
+  <p class="section-lede">三个工种，三件寻常的活儿，按应用的算法定价。客户是虚构的；下面每个数字都是 Talkquote 算出来的。</p>
+  <div class="examples">
+    <article class="example">
+      <p class="trade">油漆</p>
+      <h3>两套住宅，重新刷漆</h3>
+      <p class="who">和阳置业</p>
+      <ul><li><span>墙面与顶棚，四个房间</span><span>26 小时</span></li><li><span>乳胶漆，白色哑光</span><span>34 升</span></li><li><span>批腻子与遮蔽</span><span>8 小时</span></li><li><span>防护与清运</span><span>1 项</span></li></ul>
+      <p class="total"><span>客户看到的总额</span><span>¥30,371.76</span></p>
+    </article>
+    <article class="example">
+      <p class="trade">卫浴</p>
+      <h3>二楼卫生间翻新</h3>
+      <p class="who">布伦纳女士</p>
+      <ul><li><span>拆除洁具与瓷砖</span><span>14 小时</span></li><li><span>墙地砖铺贴</span><span>24 m²</span></li><li><span>淋浴底盆与隔断</span><span>1 项</span></li><li><span>水路，一次二次</span><span>18 小时</span></li></ul>
+      <p class="total"><span>客户看到的总额</span><span>¥49,183.20</span></p>
+    </article>
+    <article class="example">
+      <p class="trade">电工</p>
+      <h3>店面新增回路</h3>
+      <p class="who">向日葵咖啡馆</p>
+      <ul><li><span>安装与测试</span><span>11 小时</span></li><li><span>可调光筒灯</span><span>22 个</span></li><li><span>配电箱，含验收</span><span>1 项</span></li><li><span>验收证明与报告</span><span>1 项</span></li></ul>
+      <p class="total"><span>客户看到的总额</span><span>¥20,201.40</span></p>
+    </article>
+  </div>
+  <p class="quiet" style="margin-top:22px">数字仅为示例。单价、货币和税率，应用用的是你自己的。</p>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>它替代了什么</h2>
+  <p class="section-lede">那些平台能排期、能收款、能管工人。这个只做你一周要重复二十次的那九十秒。</p>
+  <table class="compare">
+    <thead><tr><th>问题</th>
+      <th>通常的答案</th><th>Talkquote</th></tr></thead>
+    <tbody>
+      <tr><th>在现场报价</th><td data-label="通常的答案">回办公室再敲一遍</td><td class="yes" data-label="Talkquote">当场说出来，发完就上车走人</td></tr>
+      <tr><th>开始用</th><td data-label="通常的答案">注册账号、按席位收费、会到期的试用</td><td class="yes" data-label="Talkquote">打开就用；三天后才问你一次</td></tr>
+      <tr><th>没人回的报价单</th><td data-label="通常的答案">等活儿丢了才知道</td><td class="yes" data-label="Talkquote">它会排到最前面，替你数着天数</td></tr>
+      <tr><th>你的价格和你的客户</th><td data-label="通常的答案">在别人的服务器上</td><td class="yes" data-label="Talkquote">在你手机里，Face ID 后面</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<section id="features" class="band"><div class="wrap">
+
+    <div class="feature">
+      <div class="copy">
+        <p class="kicker">口述</p>
+        <h2>说一遍就够了。</h2>
+        <p class="big">「人工三小时，每小时九十五；瓷砖十二平方米，每平方米六十；材料两百。」Talkquote 会把它拆成条目、单位和价格，凡是需要推断的地方都标出来供你核对。说“下一项”即可另起一行。它会在你的 iPhone 上记住客户的名字，并标出没有把握的数字。</p>
+      </div>
+      <figure class="shot"><span class="iphone"><span class="screen"><img src="../img/talkquote-2.jpg" alt="Talkquote — 说一遍就够了。" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span></figure>
+    </div>
+
+    <div class="feature">
+      <div class="copy">
+        <p class="kicker">这份文件</p>
+        <h2>你公司自己的报价单，用你自己的抬头。</h2>
+        <p class="big">你的标志、地址、税号、货币和你自己的条款，用客户看得懂的语言。可以发 PDF、可编辑的 Word、Excel 表格、给记账用的 CSV，或者直接粘进消息的纯文本——同一套数字，五种格式，用邮件发，或者用手机上任何其他方式。</p>
+      </div>
+      <figure class="shot"><span class="iphone"><span class="screen"><img src="../img/talkquote-3.jpg" alt="Talkquote — 你公司自己的报价单，用你自己的抬头。" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span></figure>
+    </div>
+
+    <div class="feature">
+      <div class="copy">
+        <p class="kicker">跟进</p>
+        <h2>没有人回复的那些报价单。</h2>
+        <p class="big">用邮件发出去就标记为「已发送」，列表会把沉默一周的排到最前面。报价单能遇上的最贵的事，就是什么都没发生。</p>
+      </div>
+      <figure class="shot"><span class="iphone"><span class="screen"><img src="../img/talkquote-4.jpg" alt="Talkquote — 没有人回复的那些报价单。" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span></figure>
+    </div>
+</div></section>
+
+<section id="gallery"><div class="wrap">
+  <h2>买之前，先看清楚</h2>
+  <p class="section-lede">整个应用，一屏一屏，就是你拿在手里时的样子。没有摆拍，也没有尚不存在的承诺。</p>
+</div>
+<div class="strip" role="group" aria-label="买之前，先看清楚">
+  <div class="rail">
+      <figure class="frame">
+        <span class="iphone"><span class="screen"><img src="../img/talkquote-g1.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+      </figure>
+      <figure class="frame">
+        <span class="iphone"><span class="screen"><img src="../img/talkquote-g2.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+      </figure>
+      <figure class="frame">
+        <span class="iphone"><span class="screen"><img src="../img/talkquote-g3.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+      </figure>
+      <figure class="frame">
+        <span class="iphone"><span class="screen"><img src="../img/talkquote-g4.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+      </figure>
+      <figure class="frame">
+        <span class="iphone"><span class="screen"><img src="../img/talkquote-g5.jpg" alt="Talkquote" loading="lazy" decoding="async" width="390" height="844"></span><span class="glare" aria-hidden="true"></span><i class="btn action"></i><i class="btn up"></i><i class="btn down"></i><i class="btn side"></i><i class="btn control"></i></span>
+      </figure>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <h2>如何使用</h2>
+  <p class="section-lede">从客户的厨房到报价单进入他们的收件箱。五个步骤，没有一步需要信号。</p>
+  <div class="steps"><div class="step"><div class="n"></div><div><h3>把您的公司信息填一次</h3><p>设置里保存名称、地址、标志、税号、货币、默认税率以及您自己的条款。此后它们会出现在每一份文件上。Talkquote 不提供自己的条款：那是您与客户之间的合同，与应用无关。</p></div></div>
+<div class="step"><div class="n"></div><div><h3>在现场口述工作内容</h3><p>点一下麦克风，正常说话即可。数量、单位和价格会从句子中提取出来；解析时需要推断的地方都会标出，供您查看。识别在设备本地运行 —— 不需要信号，也不会上传任何内容。</p></div></div>
+<div class="step"><div class="n"></div><div><h3>核对条目与毛利</h3><p>每个条目都能一键显示它来自哪句话。填入您的成本价，Talkquote 会显示利润和毛利率 —— 仅在应用内部。客户永远看不到成本价，因为让客户看到您的成本，是谁都不想要的对话。</p></div></div>
+<div class="step"><div class="n"></div><div><h3>确认金额</h3><p>在可以导出之前，您要明确确认自己核对过总额。当时的日期、版本和总额会随报价单一起保存。之后的任何修改都会清除该确认，这样记录就绝不会描述早已改变的数字。</p></div></div>
+<div class="step"><div class="n"></div><div><h3>发送出去，并知道进展</h3><p>导出为 PDF 或 Word，既可以随处分享，也可以直接从应用发送：邮件打开时已填好客户地址、附上文件，并用客户的语言写好了随附说明。选中多份报价单，它们会在同一封邮件中发出。发送会把它们标记为已发送，列表随即开始计算天数。</p></div></div></div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2 style="margin-bottom:26px">它还能做什么</h2>
+  <div class="grid"><div class="card"><div class="mark">01</div><h3>二十一种语言</h3><p>用一种语言说，用另一种语言出文件。在卢塞恩工作的波兰工匠，可以用德语为德国客户报价。</p></div>
+<div class="card"><div class="mark">02</div><h3>您自己的价目</h3><p>设置默认时薪，只要您说了工时却没说价格，Talkquote 就会使用它。</p></div>
+<div class="card"><div class="mark">03</div><h3>按您所在国家的方式计税</h3><p>VAT、MWST、TVA、IVA —— 税率和名称由您逐份设定，因为边境附近的企业未必只用一种。</p></div>
+<div class="card"><div class="mark">04</div><h3>定金与折扣</h3><p>按总额比例的定金、按条目或整份报价单的折扣，以及与您实际开票方式一致的取整。</p></div>
+<div class="card"><div class="mark">05</div><h3>复制上一份</h3><p>大多数工作都是已报价工作的变体。复制、改三行、发送 —— 不必重打十四行。</p></div>
+<div class="card"><div class="mark">06</div><h3>放下就锁上</h3><p>可为应用本身设置面容 ID 或密码，放在工作台上的手机不会显示客户价格。</p></div></div>
+</div></section>
+
+<section id="get"><div class="wrap">
+
+  <div class="cta-card">
+    <div class="cta-glow" aria-hidden="true"></div>
+    <p class="cta-badge">三天免费</p>
+    <h2>全部功能，免费三天。</h2>
+    <p class="cta-lede">无需账户，也无需注册。先完整试用三天；之后只询问一次，由你决定。</p>
+    <span class="store-button soon">即将登陆 App Store</span>
+    <p class="quiet cta-note">价格以你所在地区的货币显示在 App Store 中。前三天免费，之后按月或按年订阅——可随时在 iPhone 的“设置”中取消。</p>
+  </div>
+</div></section>
+
+<section id="faq" class="band"><div class="wrap narrow">
+  <h2 style="margin-bottom:26px">常见问题</h2>
+  <div class="qa"><details><summary>需要联网吗？</summary><div class="a"><p>不需要。口述、解析、生成 PDF 和 Word 全都在设备上运行。您可以在没有信号的地下室里写完整份报价单。</p><p>Talkquote 引起的唯一网络流量属于 App Store，发生在您订阅或恢复时。</p></div></details>
+<details><summary>报价单具有法律约束力吗？</summary><div class="a"><p>这是您与客户之间的事，取决于您自己的条款 —— 条款由您撰写，Talkquote 只负责打印。应用不提供自己的条款，也不会以您的名义作出任何承诺。</p><p>Talkquote 提供的是一份记录：您何时确认了金额、当时运行的是哪个版本、当时的总额是多少。万一某个数字发生争议，这远比任何措辞更有价值。</p></div></details>
+<details><summary>它会把价格弄错吗？</summary><div class="a"><p>它可能听错一个词，任何识别都会如此。正因如此，每个条目都会显示它来自哪句话，凡是推断出来的都会标出，而且在您亲自确认总额之前无法导出任何内容。Talkquote 起草，您做决定。</p></div></details>
+<details><summary>我可以一次发送多份报价单吗？</summary><div class="a"><p>可以。在列表中选择「选择多个」，勾选需要的，然后发送 —— 它们会作为附件放在同一封邮件里。</p><p>如果都是给同一位客户的，邮件已经填好收件人。如果分属不同客户，收件人栏会刻意留空：把两位客户放进同一封邮件，会让他们互相看到对方的地址。</p></div></details>
+<details><summary>三天免费期如何运作？</summary><div class="a"><p>每个应用都可以在提出任何要求之前完整使用三天。在 Fornela、Fornela Dolce 和 Talkquote 中，这三天在你首次打开应用时自动开始。在一次性购买的应用中，只需轻点一下，在 App Store 开始免费的三天试用：不会扣费，也不会续订。无论哪种方式，三天结束后应用只会询问一次，由你决定。</p></div></details>
+<details><summary>如何付费？</summary><div class="a"><p>Fornela、Fornela Dolce 和 Talkquote 采用订阅——按月，或更实惠的按年。Melopocket、三款 Sharpfield 工具和三款 Stopwise 应用只需购买一次，永不续订。无论哪种，你都能获得完整的应用。没有等级、没有额外套餐、没有保留功能——付款由 Apple 收取，开发者永远看不到卡号或姓名。</p></div></details>
+<details><summary>我可以改变主意吗？</summary><div class="a"><p>可以。随时在 App Store 取消：点右上角你的头像，再点「订阅」。这是唯一能停止订阅的地方——钱是 Apple 收的，应用无法替你操作。已经付过的周期内一切照常使用。</p><p>退款由 Apple 处理，不是我们——我们从来看不到你的付款信息，也无法退款。请前往 reportaproblem.apple.com，登录后选择那笔购买。</p></div></details>
+<details><summary>我的其他设备上会怎样？</summary><div class="a"><p>你买的东西属于你的 Apple 账户。在 iPad 或新 iPhone 上用同一个 Apple 账户登录，打开应用，在购买页选择「恢复购买」。不会再扣一次钱。</p><p>一次购买对应一个 Apple 账户。不参与家人共享，也不能在公司里转手——第二个人需要自己买。</p></div></details>
+<details><summary>我的数据会被发送到某处吗？</summary><div class="a"><p>不会。没有账户、没有登录、没有服务器。应用保存的一切都在您自己的设备上，删除应用后即消失。</p><p>它引起的唯一网络流量属于 App Store，发生在您购买、订阅或恢复时。</p></div></details>
+<details><summary>它使用哪种语言？</summary><div class="a"><p>取决于您设备的设置，前提是应用已翻译成该语言；否则显示英文。没有会设错的语言选项—— 更改 iPhone 的语言，应用也会随之改变。</p></div></details></div>
+</div></section>
+
+<section><div class="wrap narrow">
+  <h2>细节</h2>
+  <table class="facts"><tr><td>平台</td><td>iPhone 和 iPad，iOS 17 及更高版本</td></tr>
+<tr><td>语言</td><td>英语、德语、法语、意大利语、波兰语、西班牙语、荷兰语、葡萄牙语、瑞典语、捷克语、丹麦语、挪威语、芬兰语、土耳其语、乌克兰语、日语、中文、阿拉伯语、韩语、俄语、希腊语</td></tr>
+<tr><td>导出</td><td>PDF 和 Word（.docx）</td></tr>
+<tr><td>收集的数据</td><td>无</td></tr>
+<tr><td>是否需要账户</td><td>不需要</td></tr>
+<tr><td>一个 Apple 账户</td><td>一次购买，对应一个 Apple 账户。不参与家人共享，也不能在公司里转手。</td></tr></table>
+</div></section>
+
+<section class="legal band"><div class="wrap narrow prose">
+<details id="support" class="fold">
+  <summary><h2>支持</h2></summary>
+  <div class="callout"><p class="h">付款、退款与取消</p>
+  <p>这个应用的每一笔钱都由 Apple 收取。也就是说，只有 Apple 能查询扣款、停止订阅或者退款。开发者从来看不到卡号、姓名或付款，也无法更改。<br><br>取消订阅在 App Store 里完成，别处都不行。打开 App Store，点右上角你的头像，再点<strong>订阅</strong>。取消会停掉下一次扣款；已经付过的周期会用到最后一天。请在周期结束前至少 24 小时操作，否则这次续订照样会扣。</p></div>
+  
+  <div class="callout">
+    <p class="h">Talkquote 不做什么</p>
+    <p>Talkquote 根据您说的话起草一份报价单，并以您的名义打印。它不核对您的价格，不了解
+    您当地的规定，也不对这些数字承担任何责任。每一份报价单在离开应用之前都由您确认，
+    而这正是关键：这些数字是您的。</p>
+  </div>
+
+  <h3>某个词被识别错了</h3>
+  <p>每个条目都保留着它来自的那句话 —— 点一下条目即可查看。就地改正数字；报价单的确认会
+  自动清除，因此在可以发送之前，系统会请您核对新的总额。</p>
+
+  <h3>导出按钮是灰色的</h3>
+  <p>有两种情况会让它不可用：没有条目的报价单，以及自上次修改后您尚未确认金额的报价单。
+  打开确认部分并核实总额即可。</p>
+
+  <h3>选择「通过电子邮件发送」后没有反应</h3>
+  <p>这需要设备上已设置邮件账户。请在“设置”中添加一个，或改用“共享” —— 从那里可以发送到
+  Gmail、Outlook、WhatsApp 以及您已安装的其他应用。</p>
+  <h3>恢复您已经付过费的内容</h3><p>购买归属于您的 Apple 账户，而不是某一台设备。换新手机或重新安装后，打开应用并在购买页面选择<strong>“恢复”</strong>。不会重复收费。</p>
+  <h3>取消订阅</h3><p>打开 App Store，点右上角你的头像，再点<strong>订阅</strong>。这是唯一能停止订阅的地方——钱是 Apple 收的，应用无法替你操作。取消会停掉下一次扣款，已经付过的周期会用到最后一天。一次性买断不会续订，也就没什么好取消的。</p>
+  <p class="quiet" style="margin-top:30px">仍然没有解决？请写信到 <a href="mailto:alpenlume@gmail.com">alpenlume@gmail.com</a> —— 请说明是哪款应用、使用的是哪台 iPhone 或 iPad，以及您原本期待发生什么。</p>
+</details>
+<details id="privacy" class="fold">
+
+<summary><h2>隐私政策</h2></summary>
+<p class="date">最后更新于 2026年9月10日。</p>
+
+<div class="callout"><p class="h">简要说明</p>
+<p><strong>Talkquote 不收集任何信息、不发送任何内容，也没有账户。您的报价单和客户资料都留在您的设备上。</strong></p></div>
+
+<h3>什么会留在您的设备上</h3>
+公司资料、客户、报价单以及你导出的文件，都存放在这台设备上本应用
+ 自己的存储空间里。这个应用没有账号，也没有服务器。
+ <br><br>
+ <strong>听写。</strong> 只要手机上有对应当前语言的苹果离线模型，语音识别就在
+ 这台设备上运行。没有的时候，听写会停下来告诉你，而不是悄悄改做别的：它会提出
+ 把这一次录音发给苹果的语音服务，适用苹果的隐私政策；不按下写着这句话的按钮，
+ 什么都不会发出去。这个回答从不记住——下次听写会再问一遍——你也随时可以改用
+ 手打。
+ <br><br>
+ <strong>助手。</strong> Talkquote 可以选择性地请 AI 服务商帮你润色措辞。在你打开
+ 它并填入自己选定服务商的密钥之前，它一直是关闭的。之后你发送的内容会从你的手机
+ 直接送到那家服务商，归在你自己的账号下，适用他们的隐私政策。它从不经过开发者，
+ 这里也没有任何东西能读到它。
+ <br><br>
+ 文件只有在你发送或分享时才会去别处，而且只去你发送的地方。
+<h3>收集了什么</h3><p>什么都没有。这款应用没有账户、没有登录、没有分析统计、没有广告标识符、没有崩溃报告服务，也没有任何形式的追踪。不会建立任何画像，也不会与任何人共享任何内容。</p>
+<h3>网络使用</h3><p>这个应用没有自己的服务器：没有需要登录的地方，也永远不会有任何内容上传给开发者。它拿网络做什么——这些应用里大多数什么也不做——写在上面的“在你的设备上”一节。<br><br>有两件事确实会用到互联网，而它们都属于别人。一是 App Store，发生在您购买、订阅或恢复时。二是当<em>您</em>分享某样东西时 —— 一道菜、一份食谱、一份文件 —— iOS 会把它交给您选择的应用，无论是信息、邮件还是 WhatsApp，由那个应用通过自己的连接、按照自己的隐私政策发送。在您按下发送之前，什么都不会离开；而这款应用永远不会知道它去了哪里。</p>
+<h3>购买</h3><p>付款完全由 Apple 处理。应用永远看不到卡号、姓名或地址；它只向 App Store 问一个问题 —— 这个 Apple 账户是否拥有该应用 —— 并得到“是”或“否”。该交易适用 Apple 自己的隐私政策。</p>
+<h3>儿童</h3><p>本应用并非面向儿童，且不从任何人处收集任何信息，因此不存在任何有关儿童的信息需要披露、更正或删除。</p>
+<h3>您的权利</h3><p>数据保护法赋予您查看、更正、导出和删除有关您的个人数据的权利。由于我们没有保存任何数据，应要求时也就没有什么可以提供或删除。应用拥有的一切都在您自己的设备上：删除应用即会移除它们，而它们从未存在于别处。</p>
+<h3>变更</h3><p>若本政策日后有所变更，上方会注明日期。不会追溯修改，因为不存在任何被收集的数据可以因变更而被重新允许使用。</p>
+</details>
+</div></section>
+</main>
+<footer><div class="wrap">
+  <p><strong style="color:var(--soft)">Talkquote</strong> — 由瑞士的 Alpenlume 开发并发行。</p>
+  <p class="quiet">支持与隐私： <a href="mailto:alpenlume@gmail.com">alpenlume@gmail.com</a></p>
+  <p style="margin-top:16px">© 2026 Alpenlume. 保留所有权利。 ·
+     <a href="index.html">全部应用</a></p>
+  <p class="marks">Apple、Apple 标志、Apple Music、iPhone 和 iPad 是 Apple Inc. 在美国及其他国家和地区注册的商标；App Store 是 Apple Inc. 的服务商标。YouTube 是 Google LLC 的商标。Microsoft、Word 和 Excel 是 Microsoft 集团公司的商标。胶片、相机和镜头的名称是其各自所有者的商标，仅用于说明应用适用于哪些产品。Alpenlume 与其中任何一方均无关联，也未获得其认可。</p>
+</div></footer>
+<script>
+(() => {
+  const openTarget = () => { const t = location.hash && document.querySelector(location.hash); if (t && t.tagName === 'DETAILS') t.open = true; };
+  addEventListener('hashchange', openTarget); openTarget();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const phones = document.querySelectorAll('.iphone');
+  phones.forEach(el => {
+    let frame = 0;
+    const move = e => {
+      const b = el.getBoundingClientRect();
+      const x = (e.clientX - b.left) / b.width - 0.5;
+      const y = (e.clientY - b.top) / b.height - 0.5;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        el.classList.add('live');
+        el.style.setProperty('--ry', (x * 18).toFixed(2) + 'deg');
+        el.style.setProperty('--rx', (-y * 13).toFixed(2) + 'deg');
+        el.style.setProperty('--gx', (x * 90 + 50).toFixed(1) + '%');
+        el.style.setProperty('--gy', (y * 90 + 50).toFixed(1) + '%');
+      });
+    };
+    const leave = () => {
+      el.classList.remove('live');
+      el.style.setProperty('--ry', '0deg');
+      el.style.setProperty('--rx', '0deg');
+      el.style.setProperty('--gx', '28%');
+      el.style.setProperty('--gy', '0%');
+    };
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerleave', leave);
+    el.addEventListener('pointercancel', leave);
+  });
+
+  document.querySelectorAll('.strip').forEach(strip => {
+    const frames = [...strip.querySelectorAll('.frame')];
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const box = strip.getBoundingClientRect();
+      const middle = box.left + box.width / 2;
+      frames.forEach(f => {
+        const b = f.getBoundingClientRect();
+        const k = Math.max(-1, Math.min(1, (b.left + b.width / 2 - middle) / (box.width / 2)));
+        f.style.setProperty('--cf-ry', (-k * 32).toFixed(2) + 'deg');
+        f.style.setProperty('--cf-z', (-Math.abs(k) * 110).toFixed(0) + 'px');
+        f.style.setProperty('--cf-s', (1 - Math.abs(k) * 0.08).toFixed(3));
+      });
+    };
+    const ask = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    strip.addEventListener('scroll', ask, { passive: true });
+    addEventListener('resize', ask);
+    update();
+  });
+
+  const hero = document.querySelector('.stage .iphone');
+  if (hero) {
+    const tilt = () => hero.style.setProperty('--sy', (Math.min(1, scrollY / 700) * -9).toFixed(2) + 'deg');
+    addEventListener('scroll', () => requestAnimationFrame(tilt), { passive: true });
+    tilt();
+  }
+})();
+</script>
+</body>
+</html>
