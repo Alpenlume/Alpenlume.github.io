@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="按你走过货架的顺序排好的购物清单、563 道菜谱，以及一份“家里谁不能吃什么”的清单——买菜时管用，做菜时也管用。">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#FBFBFD">
+<meta name="theme-color" content="#07070C">
 <meta property="og:title" content="Fornela — 采购、下厨，以及那些绝不能吃的东西。">
 <meta property="og:description" content="按你走过货架的顺序排好的购物清单、563 道菜谱，以及一份“家里谁不能吃什么”的清单——买菜时管用，做菜时也管用。">
 <meta property="og:type" content="website">
@@ -58,9 +58,9 @@
 
 *,*::before,*::after{box-sizing:border-box}
 :root{
-  --ink:#1D1D1F; --soft:#6E6E73; --faint:#98989D;
-  --bg:#FBFBFD; --panel:#F2F2F7; --card:#fff; --line:#E5E5EA;
-  --accent:#CC3F14; --accent-soft:#FFE6DC; --accent-ink:#8A2A0C;
+  --ink:#F4F4F7; --soft:#9B9BA6; --faint:#6E6E7B;
+  --bg:#07070C; --panel:#0E0E15; --card:#12121A; --line:rgba(255,255,255,.09);
+  --accent:#CC3F14; --accent-soft:#2A110D; --accent-ink:#DA7556;
   --display:"Space Grotesk",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; --body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --hue2:#FF8A50; --hue3:#D6F06A; --hue4:#FFB8A8;
 
@@ -71,15 +71,29 @@
 
   /* Shadows in three steps, all of them warm rather than grey: a neutral
      shadow under a warm page reads as dirt. */
-  --lift-1:0 1px 1px rgba(28,22,16,.04),0 4px 12px rgba(28,22,16,.05);
-  --lift-2:0 1px 2px rgba(28,22,16,.05),0 14px 34px rgba(28,22,16,.09);
-  --lift-3:0 2px 4px rgba(28,22,16,.06),0 34px 74px rgba(28,22,16,.15);
+  --lift-1:0 1px 1px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.15);
+  --lift-2:0 1px 2px rgba(0,0,0,.15),0 14px 34px rgba(0,0,0,.27);
+  --lift-3:0 2px 4px rgba(0,0,0,.18),0 34px 74px rgba(0,0,0,.45);
 }
 
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);
+/* Poświata w barwie aplikacji, nie dekoracja.
+   Czarna strona bez niej jest płaska jak terminal; trzy plamy światła —
+   akcent u góry po lewej, chłodny odcień po prawej i ciepły u dołu — dają
+   jej głębię i mówią, której aplikacji dotyczy, zanim padnie pierwsze słowo.
+   Są przytwierdzone do kadru, więc nie przesuwają się przy przewijaniu. */
+body{margin:0;color:var(--ink);
   font:17px/1.65 var(--body);-webkit-font-smoothing:antialiased;
-  font-feature-settings:"kern","liga";position:relative;overflow-x:clip}
+  font-feature-settings:"kern","liga";position:relative;overflow-x:clip;
+  background:
+    radial-gradient(46% 38% at 12% 0%,
+      color-mix(in srgb,var(--accent) 26%,transparent),transparent 62%),
+    radial-gradient(42% 34% at 92% 12%,
+      color-mix(in srgb,var(--hue3) 18%,transparent),transparent 60%),
+    radial-gradient(58% 40% at 50% 100%,
+      color-mix(in srgb,var(--hue2) 12%,transparent),transparent 62%),
+    var(--bg);
+  background-attachment:fixed}
 img{max-width:100%;height:auto;display:block}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -214,9 +228,9 @@ h1{font-size:clamp(2.2rem,5.2vw,3.9rem);line-height:1.03;margin:0 0 24px;max-wid
 .chips{display:flex;flex-wrap:wrap;gap:9px;margin:0}
 .chip{font-size:13.5px;color:var(--soft);
   background:color-mix(in srgb,var(--card) 52%,transparent);
-  border:1px solid color-mix(in srgb,#fff 72%,transparent);
+  border:1px solid color-mix(in srgb,#fff 12%,transparent);
   border-radius:999px;padding:7px 14px;
-  box-shadow:0 1px 0 color-mix(in srgb,#fff 75%,transparent) inset;
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 12%,transparent) inset;
   backdrop-filter:blur(14px) saturate(140%);
   -webkit-backdrop-filter:blur(14px) saturate(140%)}
 .chip.on{background:var(--accent-soft);
@@ -239,11 +253,11 @@ h1{font-size:clamp(2.2rem,5.2vw,3.9rem);line-height:1.03;margin:0 0 24px;max-wid
 .stage .behind{position:absolute;left:50%;top:6%;width:min(400px,94%);height:94%;
   transform:translateX(-50%);border-radius:calc(var(--r-lg) + 20px);
   background:linear-gradient(165deg,
-    color-mix(in srgb,#fff 62%,transparent),
-    color-mix(in srgb,#fff 30%,transparent) 46%,
+    color-mix(in srgb,#fff 10%,transparent),
+    color-mix(in srgb,#fff 5%,transparent) 46%,
     color-mix(in srgb,var(--accent) 12%,transparent));
-  border:0.5px solid color-mix(in srgb,#fff 60%,transparent);
-  box-shadow:0 1px 0 color-mix(in srgb,#fff 85%,transparent) inset,
+  border:0.5px solid color-mix(in srgb,#fff 10%,transparent);
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 14%,transparent) inset,
              0 -1px 0 color-mix(in srgb,var(--ink) 5%,transparent) inset,
              0 30px 70px color-mix(in srgb,var(--ink) 13%,transparent);
   backdrop-filter:blur(26px) saturate(150%);
@@ -264,7 +278,7 @@ h1{font-size:clamp(2.2rem,5.2vw,3.9rem);line-height:1.03;margin:0 0 24px;max-wid
   width:min(330px,80%)}
 .hero-shot img,.stage .device img{border-radius:var(--r-lg);
   border:0.5px solid color-mix(in srgb,var(--ink) 10%,transparent);
-  box-shadow:0 1px 2px rgba(28,22,16,.05),0 22px 48px rgba(28,22,16,.16)}
+  box-shadow:0 1px 2px rgba(0,0,0,.15),0 22px 48px rgba(0,0,0,.48)}
 
 /* ── Sections ───────────────────────────────────────────── */
 section{padding:clamp(56px,7.5vw,96px) 0}
@@ -412,7 +426,7 @@ footer .mark{vertical-align:-5px;margin-right:6px;color:var(--accent)}
   border:0.5px solid color-mix(in srgb,var(--accent) 14%,transparent)}
 .feature .shot img{position:relative;border-radius:var(--r-lg);
   border:0.5px solid color-mix(in srgb,var(--ink) 10%,transparent);
-  box-shadow:0 1px 2px rgba(28,22,16,.05),0 16px 36px rgba(28,22,16,.13)}
+  box-shadow:0 1px 2px rgba(0,0,0,.15),0 16px 36px rgba(0,0,0,.39)}
 .feature:nth-child(even) .copy{order:2}
 @media(max-width:860px){.feature{grid-template-columns:1fr;gap:34px}
   .feature:nth-child(even) .copy{order:0}
@@ -435,9 +449,9 @@ footer .mark{vertical-align:-5px;margin-right:6px;color:var(--accent)}
 /* ── Cards ──────────────────────────────────────────────── */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:18px}
 .card{background:color-mix(in srgb,var(--card) 62%,transparent);
-  border:1px solid color-mix(in srgb,#fff 70%,transparent);
+  border:1px solid color-mix(in srgb,#fff 12%,transparent);
   border-radius:var(--r);padding:28px 26px;
-  box-shadow:0 1px 0 color-mix(in srgb,#fff 80%,transparent) inset,var(--lift-1);
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 13%,transparent) inset,var(--lift-1);
   backdrop-filter:blur(20px) saturate(140%);
   -webkit-backdrop-filter:blur(20px) saturate(140%);
   transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
@@ -533,7 +547,7 @@ footer .mark{vertical-align:-5px;margin-right:6px;color:var(--accent)}
   border-bottom:1px solid var(--line)}
 .app .peek img{width:78%;margin:26px auto 0;border-radius:16px 16px 0 0;
   border:1px solid color-mix(in srgb,var(--ink) 8%,transparent);border-bottom:0;
-  box-shadow:0 -1px 0 rgba(255,255,255,.6) inset,0 14px 30px rgba(28,22,16,.16);
+  box-shadow:0 -1px 0 rgba(255,255,255,.6) inset,0 14px 30px rgba(0,0,0,.48);
   object-fit:cover;object-position:top;height:auto;
   transition:transform .3s cubic-bezier(.2,.7,.3,1)}
 .app:hover .peek img{transform:translateY(-8px)}
@@ -578,14 +592,14 @@ footer .marks{margin-top:18px;font-size:11.5px;line-height:1.55;max-width:760px;
   width:calc(100% + 20px);height:calc(100% + 14px);transform:translateX(-50%);
   border-radius:calc(var(--r-lg) + 8px);
   background:linear-gradient(165deg,
-    color-mix(in srgb,#fff 52%,transparent),
+    color-mix(in srgb,#fff 9%,transparent),
     color-mix(in srgb,var(--accent) 10%,transparent));
-  border:0.5px solid color-mix(in srgb,#fff 55%,transparent);
-  box-shadow:0 1px 0 color-mix(in srgb,#fff 70%,transparent) inset,
+  border:0.5px solid color-mix(in srgb,#fff 9%,transparent);
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 12%,transparent) inset,
              0 14px 32px color-mix(in srgb,var(--ink) 9%,transparent)}
 .frame img{position:relative;border-radius:var(--r-lg);
   border:0.5px solid color-mix(in srgb,var(--ink) 10%,transparent);
-  box-shadow:0 1px 2px rgba(28,22,16,.05),0 12px 28px rgba(28,22,16,.13)}
+  box-shadow:0 1px 2px rgba(0,0,0,.15),0 12px 28px rgba(0,0,0,.39)}
 
 /* ── The moment ─────────────────────────────────────────────────
    One sentence, set as large as the page can carry it. It names the
@@ -607,9 +621,9 @@ footer .marks{margin-top:18px;font-size:11.5px;line-height:1.55;max-width:760px;
 .examples{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
 @media(max-width:900px){.examples{grid-template-columns:1fr}}
 .example{background:color-mix(in srgb,var(--card) 66%,transparent);
-  border:1px solid color-mix(in srgb,#fff 70%,transparent);
+  border:1px solid color-mix(in srgb,#fff 12%,transparent);
   border-radius:var(--r);padding:28px 26px;
-  box-shadow:0 1px 0 color-mix(in srgb,#fff 80%,transparent) inset,var(--lift-1);
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 13%,transparent) inset,var(--lift-1);
   backdrop-filter:blur(20px) saturate(140%);
   -webkit-backdrop-filter:blur(20px) saturate(140%);
   display:flex;flex-direction:column}
@@ -691,7 +705,7 @@ footer .marks{margin-top:18px;font-size:11.5px;line-height:1.55;max-width:760px;
   font-weight:600;color:#fff;overflow:hidden;
   background:linear-gradient(100deg,var(--accent),var(--hue4));
   padding:17px 38px;border-radius:999px;text-decoration:none;
-  box-shadow:0 1px 0 color-mix(in srgb,#fff 45%,transparent) inset,
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 8%,transparent) inset,
              0 10px 28px color-mix(in srgb,var(--accent) 32%,transparent);
   transition:transform .18s ease,box-shadow .18s ease}
 /* The specular line across the top, which is what makes a capsule read as
@@ -699,7 +713,7 @@ footer .marks{margin-top:18px;font-size:11.5px;line-height:1.55;max-width:760px;
 .store-button::before{content:"";position:absolute;inset:0 0 auto;height:50%;
   border-radius:999px 999px 40% 40%;pointer-events:none;
   background:linear-gradient(to bottom,
-    color-mix(in srgb,#fff 28%,transparent),transparent)}
+    color-mix(in srgb,#fff 5%,transparent),transparent)}
 .store-button:hover{text-decoration:none;transform:translateY(-2px);
   box-shadow:0 16px 36px color-mix(in srgb,var(--accent) 38%,transparent)}
 .store-button.soon{background:color-mix(in srgb,var(--card) 80%,transparent);
