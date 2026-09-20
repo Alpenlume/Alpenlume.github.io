@@ -1,4 +1,12 @@
-Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
+Copyright (c) 2020 The Fraunces Project Authors
+(https://github.com/undercasetype/Fraunces), with Reserved Font Name "Fraunces".
+
+Copyright (c) 2020 The Outfit Project Authors
+(https://github.com/Outfitio/Outfit-Fonts), with Reserved Font Name "Outfit".
+
+Copyright (c) 2020 The Space Grotesk Project Authors
+(https://github.com/floriankarsten/space-grotesk), with Reserved Font Name
+"Space Grotesk".
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
