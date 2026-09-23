@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#24344D"/><stop offset=".6" stop-color="#111923"/><stop offset="1" stop-color="#080B0F"/></linearGradient>
+<radialGradient id="glow" cx="76" cy="50" r="78" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FF9A2E" stop-opacity=".7"/><stop offset=".45" stop-color="#FF7A18" stop-opacity=".2"/><stop offset="1" stop-color="#FF7A18" stop-opacity="0"/></radialGradient>
+<radialGradient id="sun" cx=".4" cy=".35" r=".85"><stop offset="0" stop-color="#FFF3C9"/><stop offset=".5" stop-color="#FFBA40"/><stop offset="1" stop-color="#FF7A18"/></radialGradient>
+<linearGradient id="far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5D7593"/><stop offset="1" stop-color="#1F2D40"/></linearGradient>
+<linearGradient id="snow" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#E6EDF5"/><stop offset="1" stop-color="#B7C7DA"/></linearGradient>
+<linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".5" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#fff" stop-opacity=".16"/></linearGradient>
+<clipPath id="c"><rect width="128" height="128" rx="28"/></clipPath>
+</defs>
+<g clip-path="url(#c)">
+<rect width="128" height="128" fill="url(#bg)"/>
+<rect width="128" height="128" fill="url(#glow)"/>
+<g stroke="#FFC766" stroke-linecap="round" opacity=".55" stroke-width="2.4"><path d="M82 14v-6M100 20l4-4M106 38h7M58 20l-4-4"/></g>
+<circle cx="80" cy="46" r="27" fill="#FFB340" opacity=".18"/>
+<circle cx="80" cy="46" r="18" fill="url(#sun)"/>
+<path d="M-6 104 L22 78 L36 92 L52 70 L70 100 L96 74 L134 108 L134 134 L-6 134Z" fill="url(#far)"/>
+<path d="M6 118 L30 88 L38 92 L52 56 L61 27 L67 42 L75 60 L82 66 L98 90 L106 86 L124 118Z" fill="url(#snow)"/>
+<path d="M61 27 L67 42 L75 60 L82 66 L98 90 L106 86 L124 118 L86 118 L72 74Z" fill="#54708F" opacity=".38"/>
+<path d="M61 27 L66 40 L59 46 L55 52 L52 56Z" fill="#fff"/>
+</g>
+<rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="url(#rim)" stroke-width="2"/>
+</svg>
