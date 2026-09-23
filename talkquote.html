@@ -181,10 +181,10 @@ html.fail .curtain{display:none!important}
 @keyframes fl{0%,100%{transform:translateY(-7px) rotate(-1deg)}50%{transform:translateY(9px) rotate(1deg)}}
 .gate-foot{position:relative;margin:0 calc(-1*clamp(16px,4vw,64px));padding:6px 0 16px;z-index:2}
 .marq{display:flex;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
-.marq>div{display:flex;flex:none;align-items:center;gap:40px;padding-right:40px;animation:mq 120s linear infinite;font-family:var(--serif);font-weight:600;font-size:clamp(34px,4.8vw,78px);letter-spacing:-.03em;white-space:nowrap;line-height:1.16}
+.marq>div{display:flex;flex:none;align-items:center;gap:36px;padding-right:36px;animation:mq 120s linear infinite;will-change:transform;backface-visibility:hidden;contain:layout paint;font-family:var(--serif);font-weight:600;font-size:clamp(30px,4.2vw,68px);letter-spacing:-.03em;white-space:nowrap;line-height:1.16}
 .marq.r>div{animation-direction:reverse;animation-duration:150s}
 .marq span{color:var(--ink)}.marq span:nth-child(4n+3){color:var(--acc)}.marq em{font-style:normal;font-family:var(--disp);color:var(--o2);font-size:.42em}
-@keyframes mq{to{transform:translateX(-100%)}}
+@keyframes mq{from{transform:translate3d(0,0,0)}to{transform:translate3d(-100%,0,0)}}
 .cue{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}.cue i{position:relative;width:22px;height:36px;border-radius:14px;border:2px solid var(--ink)}.cue i::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:8px;margin-left:-2px;border-radius:3px;background:var(--acc);animation:cue 1.8s cubic-bezier(.6,0,.3,1) infinite}@keyframes cue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
 html.pre:not(.go) .gate .fx{opacity:0;transform:translateY(36px)}
 .gate .fx{transition:opacity .9s ease,transform 1.25s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--d,0)*.09s + .55s)}
@@ -192,7 +192,7 @@ html.pre:not(.go) .gate .ln>span{transform:translateY(118%)}
 .gate .ln>span{transition:transform 1.35s cubic-bezier(.16,.9,.2,1);transition-delay:calc(var(--d,0)*.12s + .5s)}
 .gate:not(.placed) .fl{opacity:0}.gate .fl{transition:opacity 1.2s ease;transition-delay:calc(var(--i,0)*.12s)}
 .gate.off *{animation-play-state:paused!important}
-.tile:not(.live) *,.tile:not(.live)::before{animation-play-state:paused}
+.tile:not(.vis) *,.tile:not(.vis)::before{animation-play-state:paused}
 /* ── how to use it: cards that stack as you scroll ── */
 .usel{margin-top:40px;position:relative}
 .use-step{position:sticky;top:calc(92px + var(--i)*16px);display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(18px,3vw,52px);min-height:min(470px,72vh);margin-bottom:clamp(30px,9vh,90px);grid-column:auto;box-shadow:0 -18px 40px -26px rgba(29,24,19,.35);padding-bottom:0}
@@ -227,6 +227,18 @@ nav .lang ul{background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,25
 .gsts div,.clocks div,.members a,.alert,.rsvp span,.pillrow span,.send span,.note,.hidemargin{border:1px solid rgba(255,255,255,.62);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.2),0 8px 18px -12px rgba(29,24,19,.3)}
 .fam .nw,.wall .nw{background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 78%,#fff),var(--acc));border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
 @supports not (backdrop-filter:blur(1px)){.b2,.chips span,.langs a,.xtabs button,.plabel{-webkit-backdrop-filter:none}nav .lang ul{background:rgba(255,255,255,.96)}}
+/* ── light mode: set by a script when the page runs slowly or has no GPU; nothing is blurred behind glass, nothing big moves ── */
+html.lite *,html.lite *::before,html.lite *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.lite nav::before{background:rgba(255,255,255,.93)}
+html.lite .b2,html.lite .chips span,html.lite .langs a,html.lite .xtabs button{background:rgba(255,255,255,.9)}
+html.lite .plabel{background:rgba(255,255,255,.24)}
+html.lite nav .lang ul{background:rgba(255,255,255,.98)}
+html.lite .gate-bg i{animation:none}
+html.lite .gate-bg::after{-webkit-mask-image:none;mask-image:none;opacity:.4}
+html.lite .marq{-webkit-mask-image:none;mask-image:none}
+html.lite .curtain img,html.lite .curtain b{animation:none}
+html.lite .cph-body{will-change:auto}
+html.lite .ptile::before{filter:none!important;box-shadow:none}html.lite .pbg{box-shadow:none}
 /* ── if 3D cannot start: the same phone in CSS ── */
 .fail .ptile{isolation:isolate;background:none}
 .fail .ptile::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:var(--pbgi,var(--phonebg));filter:var(--ph,none);box-shadow:0 40px 80px -40px rgba(0,0,0,.45)}
@@ -623,7 +635,7 @@ PX.hooks.push(now=>{
   PX.set(narrow.matches?ptile:pbg,'background','linear-gradient(165deg,'+g[0]+','+g[1]+' 46%,'+g[2]+')')}
  const vis=r.bottom>0&&r.top<PX.vh;PX.alpha=vis?1:0;PX.set(pbg,'opacity',vis?1:0)});
 // tiles come alive when they are seen
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('live')}),{threshold:.3});$$('.tile').forEach(t=>io.observe(t));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('live')}),{threshold:.3}),vio=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('vis',e.isIntersecting)),{rootMargin:'120px 0px'});$$('.tile').forEach(t=>{io.observe(t);vio.observe(t)});
 // typed lines: <div class="typed" data-lines='["…","…"]'>
 $$('.typed[data-lines]').forEach(el=>{const TXT=JSON.parse(el.dataset.lines);let i=0,j=0,dir=1,hold=0;
  setInterval(()=>{if(hold>0){hold--;return}const t=TXT[i];if(dir>0){j++;el.textContent=t.slice(0,j);if(j>=t.length){dir=-1;hold=22}}else{j-=2;if(j<=0){j=0;el.textContent='';dir=1;i=(i+1)%TXT.length;hold=4}else el.textContent=t.slice(0,j)}},42)});
@@ -684,4 +696,10 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>{const w=Math.max(0,1250-(Da
  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){measure();ask()});setTimeout(function(){measure();ask()},1500);
  R.classList.add('two-d');
 }catch(e){try{console.error(e)}catch(x){}}})();
+</script><script>
+(function(){var R=document.documentElement;function lite(){R.classList.add('lite')}
+ if(R.classList.contains('fail')){lite();return}
+ function test(){if(document.hidden){setTimeout(test,700);return}var last=performance.now(),d=[],n=0;
+  function f(t){d.push(t-last);last=t;if(++n<75)requestAnimationFrame(f);else{d.shift();d.sort(function(a,b){return a-b});if(d[d.length>>1]>24)lite()}}requestAnimationFrame(f)}
+ setTimeout(test,3800)})();
 </script></body></html>
