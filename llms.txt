@@ -1,0 +1,16 @@
+# Alpenlume
+
+> Small iPhone and iPad apps that each do one thing, with no account, no ads, no tracking and no server: everything stays on the device.
+
+## Apps
+
+- [Talkquote](https://alpenlume.github.io/talkquote.html): Quotations by voice
+- [Voucherlume](https://alpenlume.github.io/voucherlume.html): Every card, one wallet
+- [Sublume](https://alpenlume.github.io/sublume.html): What it all costs
+- [Filmlume](https://alpenlume.github.io/filmlume.html): Film negatives, into photos
+- [Meterlume](https://alpenlume.github.io/meterlume.html): Film light meter
+- [Weddinglume](https://alpenlume.github.io/weddinglume.html): A wedding, wherever it is held
+- [DocuLume Pro](https://alpenlume.github.io/doculume.html): Docs, PDF, scan
+
+Support: alpenlume@gmail.com
+Prices are shown in the App Store, in the buyer's currency.
