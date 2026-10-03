@@ -11,6 +11,7 @@
 - [Meterlume](https://alpenlume.github.io/meterlume.html): Film light meter
 - [Weddinglume](https://alpenlume.github.io/weddinglume.html): A wedding, wherever it is held
 - [DocuLume Pro](https://alpenlume.github.io/doculume.html): Docs, PDF, scan
+- [Fornela](https://alpenlume.github.io/fornela.html): Kitchen and shopping
 
 Support: alpenlume@gmail.com
 Prices are shown in the App Store, in the buyer's currency.
