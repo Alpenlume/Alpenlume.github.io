@@ -15,7 +15,7 @@ const K=[
 [.76,'#3A2A74','#FF7A4A','#B2527E','#7C3A78','#502C62','#2C2048','#FFA37A','#FF6A3D',.55,.35,19.1,7,.8],
 [.88,'#1A1650','#7A3F8E','#4A3A80','#35296A','#251D52','#171340','#6B4A9A','#C0508A',.92,.9,21,0,.35],
 [1,'#04061A','#14204F','#24305F','#1A2350','#121A40','#0B1030','#2A3A7A','#9AB0FF',1,1,24.5,-8,0]];
-function sample(p){let i=0;while(i<K.length-2&&p>K[i+1][0])i++;const a=K[i],b=K[i+1],t=Math.min(1,Math.max(0,(p-a[0])/(b[0]-a[0])));const s=t*t*(3-2*t);
+function sample(p){let i=0;while(i<K.length-2&&p>K[i+1][0])i++;const a=K[i],b=K[i+1],t=Math.min(1,Math.max(0,(p-a[0])/(b[0]-a[0])));const s=t*.65+t*t*(3-2*t)*.35;
  const c=k=>mix(a[k],b[k],s),n=k=>lerp(a[k],b[k],s);return{top:c(1),bot:c(2),m1:c(3),m2:c(4),m3:c(5),m4:c(6),mist:c(7),sun:c(8),n:n(9),cn:n(10),hour:n(11),temp:n(12),warm:n(13)}}
 const maxS=()=>Math.max(1,R.scrollHeight-innerHeight);
 /* ───────── the world: ONE canvas. No DOM layers, no CSS filters, nothing repainted by the page. ───────── */
@@ -23,14 +23,15 @@ const WD=JSON.parse($('#world-data').textContent);
 const cv=$('#world'),cx=cv.getContext('2d',{alpha:false});
 const PA={back:new Path2D(WD.back),lit:new Path2D(WD.lit),shd:new Path2D(WD.shd),cap:new Path2D(WD.cap),rim:new Path2D(WD.rim),l3:new Path2D(WD.l3),l4:new Path2D(WD.l4),l5:new Path2D(WD.l5)};
 const CXD=+(document.body.dataset.cx||150);
-let VW=innerWidth,VH=innerHeight,K_=1,quality=1,SC=1,CX=CXD,MH=.78;
+let VW=innerWidth,VH=innerHeight,K_=1,quality=1,SC=1,CX=CXD,MH=.78,mv=1,calmAt=0;
 function geom(){VW=innerWidth;VH=innerHeight;const wide=VW>1000;MH=wide?.78:.5;const span=wide?2800:800;CX=wide?CXD:CXD+(CXD-CXD)+0;
  // the picture is centred on the peak (x=487 in the drawing) on a phone and on the drawing's middle on a desktop
  CX=wide?CXD:487;SC=Math.max(VW/span,MH*VH/850);
- const base=Math.min(devicePixelRatio||1,VW<800?1.25:1.5);K_=Math.max(.5,base*quality);
- const area=VW*VH*K_*K_;if(area>4.2e6)K_*=Math.sqrt(4.2e6/area);
- cv.width=Math.round(VW*K_);cv.height=Math.round(VH*K_);
+ setK();
  mkStars();dirty=true}
+function setK(){const base=Math.min(devicePixelRatio||1,VW<800?1.25:1.35);K_=Math.max(.5,base*quality*mv);
+ const area=VW*VH*K_*K_;if(area>3.2e6)K_*=Math.sqrt(3.2e6/area);
+ cv.width=Math.round(VW*K_);cv.height=Math.round(VH*K_);dirty=true}
 const px=vx=>VW/2+(vx-CX)*SC,py=vy=>VH-(1000-vy)*SC;
 /* stars, flakes, clouds */
 let stars=[],flakes=[],clouds=[],shoot=null,nextShoot=3,SA=0,SN=0;
@@ -101,12 +102,14 @@ function hudUpdate(p,s){const alt=(Math.round((1000+p*2800)/10)*10).toLocaleStri
  if(ruler&&ruler.offsetHeight){you.style.transform='translateY('+(-p*ruler.offsetHeight-5).toFixed(1)+'px)'}
  const th=s.cn<.33?'t-day':s.cn<.7?'t-dusk':'t-night';if(th!==theme){document.body.classList.remove('t-day','t-dusk','t-night');document.body.classList.add(th);theme=th}}
 function frame(t){raf=0;const dt=Math.min(.05,(t-tNow)/1000||.016);tNow=t;
- if(!RM)pp+=(tgt-pp)*.12;else pp=tgt;const moving=Math.abs(tgt-pp)>.00008;if(!moving)pp=tgt;
+ if(!RM)pp+=(tgt-pp)*(1-Math.exp(-dt*6.5));else pp=tgt;const moving=Math.abs(tgt-pp)>.00006;if(!moving)pp=tgt;
+ // while the picture is moving it is drawn a little smaller; it sharpens a moment after it stops
+ if(moving){calmAt=0;if(mv===1&&!RM){mv=.8;setK()}}else if(mv<1){if(!calmAt)calmAt=t;if(t-calmAt>260){mv=1;setK();calmAt=0}}
  if(!RM){nextShoot-=dt;if(shoot){shoot.l+=dt*900;if(shoot.l>900)shoot=null}if(SN>.01){for(const f of flakes){f.y+=f.v*60*dt;f.d+=dt;f.x+=Math.sin(f.d)*.35;if(f.y>VH){f.y=-4;f.x=Math.random()*VW}}}}
  const s=sample(pp);drawWorld(t,pp,s);hudUpdate(pp,s);walk(pp);dirty=false;
  // adaptive resolution: if scrolling stutters, draw the world a little smaller
  if(moving&&prevT){const d=t-prevT;if(d>34){if(++slow>14&&quality>.55){quality=Math.max(.55,quality-.15);slow=0;geom()}}else if(slow>0)slow--}prevT=moving?t:0;
- if(moving||dirty)raf=requestAnimationFrame(frame);else if(!RM&&!document.hidden){idle=setTimeout(()=>{idle=0;kick()},SA>.05||SN>.01?70:140)}}
+ if(moving||dirty||mv<1)raf=requestAnimationFrame(frame);else if(!RM&&!document.hidden){idle=setTimeout(()=>{idle=0;kick()},SA>.05||SN>.01?70:140)}}
 function kick(){if(!raf){clearTimeout(idle);idle=0;raf=requestAnimationFrame(frame)}}
 addEventListener('scroll',()=>{tgt=scrollY/maxS();kick()},{passive:true});
 addEventListener('resize',()=>{geom();tgt=scrollY/maxS();layout();kick()});
