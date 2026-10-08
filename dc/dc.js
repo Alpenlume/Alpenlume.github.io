@@ -20,7 +20,8 @@ function sample(p){let i=0;while(i<K.length-2&&p>K[i+1][0])i++;const a=K[i],b=K[
 const maxS=()=>Math.max(1,R.scrollHeight-innerHeight);
 /* ───────── the world: ONE canvas. No DOM layers, no CSS filters, nothing repainted by the page. ───────── */
 const WD=JSON.parse($('#world-data').textContent);
-const cv=$('#world'),cx=cv.getContext('2d',{alpha:false});
+const cv=$('#world'),sky=$('#sky'),LAND=cv.getContext('2d'),SKYC=sky.getContext('2d',{alpha:false});let cx=LAND;
+const sunEl=$('#sun'),sunCv=sunEl.querySelector('canvas'),sunCx=sunCv.getContext('2d'),rays=sunEl.querySelector('.rays');
 const PA={back:new Path2D(WD.back),lit:new Path2D(WD.lit),shd:new Path2D(WD.shd),cap:new Path2D(WD.cap),rim:new Path2D(WD.rim),l3:new Path2D(WD.l3),l4:new Path2D(WD.l4),l5:new Path2D(WD.l5)};
 const CXD=+(document.body.dataset.cx||150);
 let VW=innerWidth,VH=innerHeight,K_=1,quality=1,SC=1,CX=CXD,MH=.78,mv=1,calmAt=0;
@@ -31,7 +32,7 @@ function geom(){VW=innerWidth;VH=innerHeight;const wide=VW>1000;MH=wide?.78:.5;c
  mkStars();dirty=true}
 function setK(){const base=Math.min(devicePixelRatio||1,VW<800?1.25:1.35);K_=Math.max(.5,base*quality*mv);
  const area=VW*VH*K_*K_;if(area>3.2e6)K_*=Math.sqrt(3.2e6/area);
- cv.width=Math.round(VW*K_);cv.height=Math.round(VH*K_);dirty=true}
+ cv.width=sky.width=Math.round(VW*K_);cv.height=sky.height=Math.round(VH*K_);sunKey='';dirty=true}
 const px=vx=>VW/2+(vx-CX)*SC,py=vy=>VH-(1000-vy)*SC;
 /* stars, flakes, clouds */
 let stars=[],flakes=[],clouds=[],shoot=null,nextShoot=3,SA=0,SN=0;
@@ -44,8 +45,9 @@ const CS=[];(function(){for(let k=0;k<4;k++){const c=document.createElement('can
  for(let i=0;i<8;i++)el(210+r(-120,120),78+r(-18,14),r(55,92),r(26,44));el(210,112,170,28);CS.push(c)}})();
 let tintKey='',tinted=[];
 function tintSprites(color){if(color===tintKey)return;tintKey=color;tinted=CS.map(s=>{const c=document.createElement('canvas');c.width=s.width;c.height=s.height;const g=c.getContext('2d');g.drawImage(s,0,0);g.globalCompositeOperation='source-in';g.fillStyle=color;g.fillRect(0,0,c.width,c.height);return c})}
-let last=0,tNow=0;
-function drawWorld(t,p,s){const w=VW,h=VH;cx.setTransform(K_,0,0,K_,0,0);
+let last=0,tNow=0,sunKey='';
+const pt={x:0,y:0},po={x:0,y:0};
+function drawWorld(t,p,s){const w=VW,h=VH;cx=SKYC;cx.setTransform(K_,0,0,K_,0,0);
  // sky
  let g=cx.createLinearGradient(0,0,0,h);g.addColorStop(0,s.top);g.addColorStop(.92,s.bot);g.addColorStop(1,s.bot);cx.fillStyle=g;cx.fillRect(0,0,w,h);
  // stars
@@ -56,35 +58,38 @@ function drawWorld(t,p,s){const w=VW,h=VH;cx.setTransform(K_,0,0,K_,0,0);
  // aurora, only near the top of the climb
  const au=Math.max(0,Math.min(1,(p-.9)/.08))*.8;if(au>.02){cx.save();cx.globalCompositeOperation='lighter';for(let i=0;i<3;i++){const x0=w*(-.1+i*.2)+Math.sin(t/4000+i*2)*w*.06,gw=w*.7;const gr=cx.createLinearGradient(x0,0,x0+gw,0);gr.addColorStop(0,'rgba(60,255,170,0)');gr.addColorStop(.3,'rgba(60,255,170,'+.28*au+')');gr.addColorStop(.6,'rgba(80,200,255,'+.24*au+')');gr.addColorStop(.85,'rgba(170,90,255,'+.26*au+')');gr.addColorStop(1,'rgba(170,90,255,0)');
   const sk=Math.sin(t/3000+i)*w*.1,y0=h*(.02+i*.07);const vg=cx.createLinearGradient(0,y0,0,y0+h*.4);vg.addColorStop(0,'rgba(0,0,0,0)');cx.fillStyle=gr;cx.beginPath();cx.moveTo(x0,y0+h*.4);cx.lineTo(x0+sk,y0);cx.lineTo(x0+gw+sk,y0);cx.lineTo(x0+gw,y0+h*.4);cx.closePath();cx.globalAlpha=.9;cx.fill()}cx.restore()}
- // sun
- const ps=Math.min(1,p/.8),sx0=px(640),sy0=py(368),sx=sx0+(w*.1-sx0)*ps,yb=sy0+(h*.95-sy0)*ps,sy=yb-Math.pow(Math.sin(Math.PI*ps),.8)*(yb-h*.16),ss=SC*(1-.35*Math.sin(Math.PI*ps));
- const so=p>.73?Math.max(0,1-(p-.73)*11):1;
- if(so>.01){cx.save();cx.globalAlpha=so;cx.translate(sx,sy);cx.scale(ss,ss);
-  g=cx.createRadialGradient(0,0,0,0,0,520);g.addColorStop(0,rgba(s.sun,.6));g.addColorStop(1,rgba(s.sun,0));cx.fillStyle=g;cx.fillRect(-520,-520,1040,1040);
-  cx.fillStyle=rgba(s.sun,.3);cx.beginPath();cx.arc(0,0,215,0,6.283);cx.fill();
-  cx.strokeStyle=rgba(mix(s.sun,'#B98A52',.55),.85);cx.lineWidth=24;cx.lineCap='round';const rot=t/140000*6.283;for(let i=0;i<8;i++){const a=rot+i*Math.PI/4,sn=Math.sin(a),cs=Math.cos(a);cx.beginPath();cx.moveTo(sn*253,-cs*253);cx.lineTo(sn*308,-cs*308);cx.stroke()}
-  g=cx.createRadialGradient(-55,-46,0,-20,-10,150);g.addColorStop(0,'#FFF4D6');g.addColorStop(.5,s.sun);g.addColorStop(1,mix(s.sun,'#FF8A1F',.55));cx.fillStyle=g;cx.beginPath();cx.arc(0,0,145,0,6.283);cx.fill();cx.restore()}
+ // sun: a layer of its own (a small canvas for colour, rays turned by CSS), moved by transform alone, so it glides whatever the rest of the picture costs
+ {const ps=Math.min(1,p/.8),sx0=px(640),sy0=py(368),sx=sx0+(w*.1-sx0)*ps-po.x*9,yb=sy0+(h*.95-sy0)*ps,sy=yb-Math.pow(Math.sin(Math.PI*ps),.8)*(yb-h*.16)-po.y*6,ss=SC*(1-.35*Math.sin(Math.PI*ps));
+  const so=p>.73?Math.max(0,1-(p-.73)*11):1;
+  sunEl.style.opacity=so<.01?0:so.toFixed(3);sunEl.style.transform='translate3d('+sx.toFixed(2)+'px,'+sy.toFixed(2)+'px,0) scale('+ss.toFixed(4)+')';
+  if(so>.01&&s.sun!==sunKey){sunKey=s.sun;const u=sunCx;u.setTransform(1,0,0,1,0,0);u.clearRect(0,0,1040,1040);u.translate(520,520);
+   let q=u.createRadialGradient(0,0,0,0,0,520);q.addColorStop(0,rgba(s.sun,.6));q.addColorStop(1,rgba(s.sun,0));u.fillStyle=q;u.fillRect(-520,-520,1040,1040);
+   u.fillStyle=rgba(s.sun,.3);u.beginPath();u.arc(0,0,215,0,6.283);u.fill();
+   q=u.createRadialGradient(-55,-46,0,-20,-10,150);q.addColorStop(0,'#FFF4D6');q.addColorStop(.5,s.sun);q.addColorStop(1,mix(s.sun,'#FF8A1F',.55));u.fillStyle=q;u.beginPath();u.arc(0,0,145,0,6.283);u.fill();
+   rays.style.stroke=rgba(mix(s.sun,'#B98A52',.55),.85)}}
  // moon
  const pm=Math.min(1,Math.max(0,(p-.72)/.28));
  if(pm>.01){const mx=w*(.82-pm*.68),my=h*(.5-Math.sin(Math.PI*pm)*.36);cx.save();cx.globalAlpha=Math.min(1,pm*5);cx.translate(mx,my);
   g=cx.createRadialGradient(0,0,20,0,0,120);g.addColorStop(0,'rgba(170,190,255,.4)');g.addColorStop(1,'rgba(170,190,255,0)');cx.fillStyle=g;cx.fillRect(-120,-120,240,240);
   g=cx.createRadialGradient(-15,-15,0,0,0,46);g.addColorStop(0,'#fff');g.addColorStop(.52,'#e3e8ff');g.addColorStop(1,'#a6b2e6');cx.fillStyle=g;cx.beginPath();cx.arc(0,0,44,0,6.283);cx.fill();
   cx.fillStyle='rgba(120,130,180,.3)';for(const[ax,ay,ar]of[[11,-12,6],[-14,12,7],[14,18,4]]){cx.beginPath();cx.arc(ax,ay,ar,0,6.283);cx.fill()}cx.restore()}
+ // everything from the clouds down is drawn on the second canvas, above the sun
+ cx=LAND;cx.setTransform(K_,0,0,K_,0,0);cx.clearRect(0,0,w,h);
  // clouds
  const co=(.84-.66*s.n)*Math.min(1,.4+p*5);
  if(co>.02){tintSprites(mix(mix(s.bot,'#ffffff',.62),'#1b2457',s.cn));const L=[[.82,.9],[.6,.75],[.5,.6]];
-  for(const c of clouds){const [al,sc0]=L[c.l];const wdt=420*sc0*c.s*(w/1440+.4),hgt=170*sc0*c.s*(w/1440+.4);const span=w+wdt*2;const x=((c.x*span+t/1000*(2+c.l*3)*c.sp)%span)-wdt;const y=h*c.y-p*h*[.06,.1,.16][c.l];cx.globalAlpha=co*al;cx.drawImage(tinted[c.k],x,y,wdt,hgt)}cx.globalAlpha=1}
+  for(const c of clouds){const [al,sc0]=L[c.l];const wdt=420*sc0*c.s*(w/1440+.4),hgt=170*sc0*c.s*(w/1440+.4);const span=w+wdt*2;const x=((c.x*span+t/1000*(2+c.l*3)*c.sp)%span)-wdt-po.x*[6,10,16][c.l];const y=h*c.y-p*h*[.06,.1,.16][c.l]-po.y*[3,5,8][c.l];cx.globalAlpha=co*al;cx.drawImage(tinted[c.k],x,y,wdt,hgt)}cx.globalAlpha=1}
  // birds, at the start of the climb only
  if(p<.28){cx.globalAlpha=Math.max(0,1-p/.28);cx.strokeStyle='#2a1f3a';cx.lineWidth=2;cx.lineCap='round';for(let i=0;i<5;i++){const per=(26+i*7)*1000;const x=(((t+i*per*.3)%per)/per)*(w*1.12)-w*.06,y=h*(.1+i*.06)-((t%per)/per)*h*.06,f=Math.sin(t/110+i)*3;cx.beginPath();cx.moveTo(x,y+4);cx.quadraticCurveTo(x+6,y-2-f,x+12,y+4);cx.quadraticCurveTo(x+18,y-2-f,x+24,y+4);cx.stroke()}cx.globalAlpha=1}
  // mountains: the company icon drawn wide, recoloured by the hour
  const dk=Math.max(0,(s.n-.4)/.6)*.8,fc=c=>mix(mix(c,s.sun,s.warm*.5),'#16204A',dk);
- const lay=(dy,sc)=>{cx.setTransform(K_,0,0,K_,0,0);cx.translate(w/2,h+dy);cx.scale(sc,sc);cx.translate(-w/2,-h);cx.translate(w/2-CX*SC,h-1000*SC);cx.scale(SC,SC)};
- lay(p*.04*h,1);g=cx.createLinearGradient(0,590,0,1000);g.addColorStop(0,fc('#6A7FA3'));g.addColorStop(1,fc('#3F5278'));cx.fillStyle=g;cx.fill(PA.back);
- lay(p*.09*h,1+p*.42);g=cx.createLinearGradient(0,215,0,943);g.addColorStop(0,fc('#B4C0D6'));g.addColorStop(1,fc('#8CA0BE'));cx.fillStyle=g;cx.fill(PA.shd);
+ const lay=(dy,sc,ox=0,oy=0)=>{cx.setTransform(K_,0,0,K_,0,0);cx.translate(w/2+ox,h+dy+oy);cx.scale(sc,sc);cx.translate(-w/2,-h);cx.translate(w/2-CX*SC,h-1000*SC);cx.scale(SC,SC)};
+ lay(p*.04*h,1,-po.x*5,-po.y*3);g=cx.createLinearGradient(0,590,0,1000);g.addColorStop(0,fc('#6A7FA3'));g.addColorStop(1,fc('#3F5278'));cx.fillStyle=g;cx.fill(PA.back);
+ lay(p*.09*h,1+p*.42,-po.x*12,-po.y*6);g=cx.createLinearGradient(0,215,0,943);g.addColorStop(0,fc('#B4C0D6'));g.addColorStop(1,fc('#8CA0BE'));cx.fillStyle=g;cx.fill(PA.shd);
  g=cx.createLinearGradient(0,215,0,943);g.addColorStop(0,fc('#F4F7FF'));g.addColorStop(1,fc('#BCCBE3'));cx.fillStyle=g;cx.fill(PA.lit);
  cx.fillStyle=fc('#FFFFFF');cx.fill(PA.cap);cx.strokeStyle='rgba(255,255,255,.28)';cx.lineWidth=3;cx.lineJoin='round';cx.stroke(PA.rim);
- const band=(path,hv,vb,dy,col)=>{const hp=hv*h;cx.setTransform(K_,0,0,K_,0,0);cx.translate(0,h+dy-hp);cx.scale(w/1440,hp/vb);cx.fillStyle=col;cx.fill(path)};
- band(PA.l3,.30,600,p*.16*h,s.m3);band(PA.l4,.21,600,p*.26*h,s.m4);band(PA.l5,.15,620,p*.40*h,mix(s.m4,'#000000',.3));
+ const band=(path,hv,vb,dy,col,ox=0,oy=0)=>{const hp=hv*h;cx.setTransform(K_,0,0,K_,0,0);cx.translate(ox-40,h+dy-hp+oy);cx.scale((w+80)/1440,hp/vb);cx.fillStyle=col;cx.fill(path)};
+ band(PA.l3,.30,600,p*.16*h,s.m3,-po.x*18,-po.y*8);band(PA.l4,.21,600,p*.26*h,s.m4,-po.x*26,-po.y*11);band(PA.l5,.15,620,p*.40*h,mix(s.m4,'#000000',.3),-po.x*36,-po.y*14);
  // mist low in the valley, only while it is morning
  const fo=Math.max(0,.85-p*3);if(fo>.01){cx.setTransform(K_,0,0,K_,0,0);cx.globalAlpha=fo;for(const[fx,fw]of[[.3,.6],[.78,.5]]){cx.save();cx.translate(w*fx,h*(1+p*.3));cx.scale(1,.55);g=cx.createRadialGradient(0,0,0,0,0,w*fw);g.addColorStop(0,rgba(s.mist,.8));g.addColorStop(1,rgba(s.mist,0));cx.fillStyle=g;cx.fillRect(-w*fw,-w*fw,w*fw*2,w*fw*2);cx.restore()}cx.globalAlpha=1}
  // snow near the top
@@ -101,17 +106,22 @@ function hudUpdate(p,s){const alt=(Math.round((1000+p*2800)/10)*10).toLocaleStri
  prog.style.transform='scaleX('+p.toFixed(4)+')';
  if(ruler&&ruler.offsetHeight){you.style.transform='translateY('+(-p*ruler.offsetHeight-5).toFixed(1)+'px)'}
  const th=s.cn<.33?'t-day':s.cn<.7?'t-dusk':'t-night';if(th!==theme){document.body.classList.remove('t-day','t-dusk','t-night');document.body.classList.add(th);theme=th}}
+let vel=0;
 function frame(t){raf=0;const dt=Math.min(.05,(t-tNow)/1000||.016);tNow=t;
- if(!RM)pp+=(tgt-pp)*(1-Math.exp(-dt*6.5));else pp=tgt;const moving=Math.abs(tgt-pp)>.00006;if(!moving)pp=tgt;
- // while the picture is moving it is drawn a little smaller; it sharpens a moment after it stops
- if(moving){calmAt=0;if(mv===1&&!RM){mv=.8;setK()}}else if(mv<1){if(!calmAt)calmAt=t;if(t-calmAt>260){mv=1;setK();calmAt=0}}
+ // the hour follows the scroll on a critically damped spring: no jump of speed when scrolling starts, none when it stops
+ if(!RM){const x=pp-tgt,e=Math.exp(-7.5*dt),tm=(vel+7.5*x)*dt;pp=tgt+(x+tm)*e;vel=(vel-7.5*tm)*e;
+  const k=1-Math.exp(-dt*4.2);po.x+=(pt.x-po.x)*k;po.y+=(pt.y-po.y)*k}else{pp=tgt;vel=0}
+ const moving=Math.abs(tgt-pp)>.00004||Math.abs(vel)>.0008;if(!moving){pp=tgt;vel=0}
+ const drift=!RM&&(Math.abs(pt.x-po.x)>.002||Math.abs(pt.y-po.y)>.002);
  if(!RM){nextShoot-=dt;if(shoot){shoot.l+=dt*900;if(shoot.l>900)shoot=null}if(SN>.01){for(const f of flakes){f.y+=f.v*60*dt;f.d+=dt;f.x+=Math.sin(f.d)*.35;if(f.y>VH){f.y=-4;f.x=Math.random()*VW}}}}
  const s=sample(pp);drawWorld(t,pp,s);hudUpdate(pp,s);walk(pp);dirty=false;
- // adaptive resolution: if scrolling stutters, draw the world a little smaller
- if(moving&&prevT){const d=t-prevT;if(d>34){if(++slow>14&&quality>.55){quality=Math.max(.55,quality-.15);slow=0;geom()}}else if(slow>0)slow--}prevT=moving?t:0;
- if(moving||dirty||mv<1)raf=requestAnimationFrame(frame);else if(!RM&&!document.hidden){idle=setTimeout(()=>{idle=0;kick()},SA>.05||SN>.01?70:140)}}
+ // adaptive resolution: only if the picture really cannot keep up, draw it a little smaller
+ if((moving||drift)&&prevT){const d=t-prevT;if(d>40){if(++slow>24&&quality>.6){quality=Math.max(.6,quality-.1);slow=0;geom()}}else if(slow>0)slow--}prevT=(moving||drift)?t:0;
+ if(moving||drift||dirty)raf=requestAnimationFrame(frame);else if(!RM&&!document.hidden){idle=setTimeout(()=>{idle=0;kick()},SA>.05||SN>.01?33:66)}}
 function kick(){if(!raf){clearTimeout(idle);idle=0;raf=requestAnimationFrame(frame)}}
 addEventListener('scroll',()=>{tgt=scrollY/maxS();kick()},{passive:true});
+addEventListener('pointermove',e=>{if(RM||e.pointerType==='touch')return;pt.x=e.clientX/VW*2-1;pt.y=e.clientY/VH*2-1;kick()},{passive:true});
+document.documentElement.addEventListener('pointerleave',()=>{pt.x=0;pt.y=0;kick()});
 addEventListener('resize',()=>{geom();tgt=scrollY/maxS();layout();kick()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()});
 /* trail: the dashed path is drawn once; the part behind the hiker lights up segment by segment */
