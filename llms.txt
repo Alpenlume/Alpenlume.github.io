@@ -9,14 +9,10 @@
 - [Sublume](https://alpenlume.github.io/sublume.html): What it all costs
 - [Filmlume](https://alpenlume.github.io/filmlume.html): Film negatives, into photos
 - [Meterlume](https://alpenlume.github.io/meterlume.html): 35 mm film light meter
-- [Meterlume 120](https://alpenlume.github.io/meterlume-120.html): 120 film light meter
 - [Weddinglume](https://alpenlume.github.io/weddinglume.html): A wedding, wherever it is held
 - [DocuLume Pro](https://alpenlume.github.io/doculume.html): Docs, PDF, scan
 - [Fornela](https://alpenlume.github.io/fornela.html): Kitchen and shopping
-- [Fornela Dolce](https://alpenlume.github.io/dolce.html): Desserts
-- [Sharpfield Full Frame](https://alpenlume.github.io/sharpfield-full-frame.html): Full frame optics
-- [Sharpfield Medium Format](https://alpenlume.github.io/sharpfield-medium-format.html): Medium format optics
-- [Sharpfield Crop Sensor](https://alpenlume.github.io/sharpfield-crop-sensor.html): Crop sensor optics
+- [Sharpfield](https://alpenlume.github.io/sharpfield-full-frame.html): Full frame optics
 - [Melopocket](https://alpenlume.github.io/melopocket.html): Music and podcasts
 
 Support: alpenlume@gmail.com
