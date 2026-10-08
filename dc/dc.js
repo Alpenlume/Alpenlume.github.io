@@ -116,13 +116,15 @@ function frame(t){raf=0;const dt=Math.min(.05,(t-tNow)/1000||.016);tNow=t;
  if(!RM){nextShoot-=dt;if(shoot){shoot.l+=dt*900;if(shoot.l>900)shoot=null}if(SN>.01){for(const f of flakes){f.y+=f.v*60*dt;f.d+=dt;f.x+=Math.sin(f.d)*.35;if(f.y>VH){f.y=-4;f.x=Math.random()*VW}}}}
  const s=sample(pp);drawWorld(t,pp,s);hudUpdate(pp,s);walk(pp);dirty=false;
  // adaptive resolution: only if the picture really cannot keep up, draw it a little smaller
- if((moving||drift)&&prevT){const d=t-prevT;if(d>40){if(++slow>24&&quality>.6){quality=Math.max(.6,quality-.1);slow=0;geom()}}else if(slow>0)slow--}prevT=(moving||drift)?t:0;
+ if((moving||drift)&&prevT){const d=t-prevT;if(d>40){if(++false){quality=Math.max(.6,quality-.1);slow=0;geom()}}else if(slow>0)slow--}prevT=(moving||drift)?t:0;
  if(moving||drift||dirty)raf=requestAnimationFrame(frame);else if(!RM&&!document.hidden){idle=setTimeout(()=>{idle=0;kick()},SA>.05||SN>.01?33:66)}}
 function kick(){if(!raf){clearTimeout(idle);idle=0;raf=requestAnimationFrame(frame)}}
 addEventListener('scroll',()=>{tgt=scrollY/maxS();kick()},{passive:true});
 addEventListener('pointermove',e=>{if(RM||e.pointerType==='touch')return;pt.x=e.clientX/VW*2-1;pt.y=e.clientY/VH*2-1;kick()},{passive:true});
 document.documentElement.addEventListener('pointerleave',()=>{pt.x=0;pt.y=0;kick()});
-addEventListener('resize',()=>{geom();tgt=scrollY/maxS();layout();kick()});
+let lastW=innerWidth,lastH=innerHeight;
+/* a phone's address bar sliding away changes the height a little while the page scrolls: that is not a resize, and re-making the canvases then is what made the picture blink */
+addEventListener('resize',()=>{if(Math.abs(innerWidth-lastW)<2&&Math.abs(innerHeight-lastH)<140)return;lastW=innerWidth;lastH=innerHeight;geom();tgt=scrollY/maxS();layout();frame(performance.now())});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()});
 /* trail: the dashed path is drawn once; the part behind the hiker lights up segment by segment */
 const trail=$('.trail'),svgp=$('.trail svg.path'),base=$('.trail .base'),hik=$('.hiker');let segs=[],segY=[],PX=[],PY=[],trH=1;
