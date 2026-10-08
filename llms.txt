@@ -8,7 +8,7 @@
 - [Voucherlume](https://alpenlume.github.io/voucherlume.html): Every card, one wallet
 - [Sublume](https://alpenlume.github.io/sublume.html): What it all costs
 - [Filmlume](https://alpenlume.github.io/filmlume.html): Film negatives, into photos
-- [Meterlume](https://alpenlume.github.io/meterlume.html): 35 mm film light meter
+- [Meterlume](https://alpenlume.github.io/meterlume.html): Film light meter · 35 mm and 120
 - [Weddinglume](https://alpenlume.github.io/weddinglume.html): A wedding, wherever it is held
 - [DocuLume Pro](https://alpenlume.github.io/doculume.html): Docs, PDF, scan
 - [Fornela](https://alpenlume.github.io/fornela.html): Kitchen and shopping
