@@ -147,3 +147,30 @@ $$('.q button').forEach(b=>b.addEventListener('click',()=>{const q=b.parentEleme
 $$('.rail').forEach(r=>{let d=false,x0=0,s0=0;r.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'){d=true;x0=e.clientX;s0=r.scrollLeft}});addEventListener('pointerup',()=>d=false);r.addEventListener('pointermove',e=>{if(d){r.scrollLeft=s0-(e.clientX-x0)}})});
 const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);const n=+e.target.dataset.count,el=e.target;let v=0;if(!n||RM){el.textContent=n;return}const t=setInterval(()=>{v++;el.textContent=v;if(v>=n)clearInterval(t)},Math.max(24,900/n))}),{threshold:.6});$$('[data-count]').forEach(x=>co.observe(x));
 geom();tgt=scrollY/maxS();pp=tgt;layout();addEventListener('load',()=>{layout();tgt=scrollY/maxS();kick()});if(document.fonts)document.fonts.ready.then(()=>{layout();kick()});kick();
+
+/* ───────── Meterlume: a spot on the photograph, read from its own pixels (see meterlume_scene.py) ───────── */
+(()=>{const fig=$('.ms-ph[data-ev]'),ring=fig&&fig.querySelector('.ms-ring'),dj=$('#ms-ev');if(!ring||!dj)return;
+const D=JSON.parse(dj.textContent),B=atob(D.data),C=D.columns,Rw=D.rows;
+const cell=(x,y)=>D.lowest+D.step*B.charCodeAt(Math.min(Rw-1,Math.max(0,y))*C+Math.min(C-1,Math.max(0,x)));
+const evAt=(u,v)=>{const x=u*C-.5,y=v*Rw-.5,x0=Math.floor(x),y0=Math.floor(y),tx=x-x0,ty=y-y0;
+ return lerp(lerp(cell(x0,y0),cell(x0+1,y0),tx),lerp(cell(x0,y0+1),cell(x0+1,y0+1),tx),ty)};
+/* the 35 mm dial of the app, in seconds */
+const DIAL=[1/8000,1/4000,1/2000,1/1000,1/500,1/250,1/125,1/60,1/30,1/15,1/8,1/4,1/2,1,2,4,8,15,30,60];
+const near=t=>{let b=0;DIAL.forEach((d,i)=>{if(Math.abs(Math.log2(d/t))<Math.abs(Math.log2(DIAL[b]/t)))b=i});return b};
+const fmt=t=>t>=1?Math.round(t)+' s':'1/'+Math.round(1/t);
+const st={u:.62,v:.55,iso:400,f:11};
+const evEl=$('.ms-ev'),tEl=$('.ms-t'),tagEv=fig.querySelector('.ms-tag em'),dial=$$('.ms-dial span');
+function show(){const ev=evAt(st.u,st.v),t=st.f*st.f/(Math.pow(2,ev)*st.iso/100),i=near(t);
+ ring.style.left=st.u*100+'%';ring.style.top=st.v*100+'%';
+ const e1='EV '+ev.toFixed(1);evEl.textContent=e1;tagEv.textContent=e1;tEl.textContent=fmt(DIAL[i]);
+ [i-1,i,i+1].forEach((k,n)=>{dial[n].textContent=DIAL[k]?fmt(DIAL[k]):'—'})}
+function put(cx,cy){const r=fig.getBoundingClientRect();st.u=Math.min(.985,Math.max(.015,(cx-r.left)/r.width));st.v=Math.min(.985,Math.max(.015,(cy-r.top)/r.height));ring.classList.add('moved');show()}
+let down=false;
+ring.addEventListener('pointerdown',e=>{down=true;ring.classList.add('drag');ring.setPointerCapture(e.pointerId);e.preventDefault()});
+ring.addEventListener('pointermove',e=>{if(down)put(e.clientX,e.clientY)});
+const up=()=>{down=false;ring.classList.remove('drag')};ring.addEventListener('pointerup',up);ring.addEventListener('pointercancel',up);
+fig.addEventListener('click',e=>{if(e.target===ring||ring.contains(e.target))return;put(e.clientX,e.clientY)});
+ring.addEventListener('keydown',e=>{const d={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!d)return;e.preventDefault();const s=e.shiftKey?.08:.02;st.u=Math.min(.985,Math.max(.015,st.u+d[0]*s));st.v=Math.min(.985,Math.max(.015,st.v+d[1]*s));ring.classList.add('moved');show()});
+$$('.ms-ch').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});
+ if(b.dataset.iso)st.iso=+b.dataset.iso;if(b.dataset.f)st.f=+b.dataset.f;show()}));
+show()})();
