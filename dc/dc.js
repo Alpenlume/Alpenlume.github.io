@@ -186,3 +186,13 @@ ring.addEventListener('keydown',e=>{const d={ArrowLeft:[-1,0],ArrowRight:[1,0],A
 $$('.ms-ch').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});
  if(b.dataset.iso)st.iso=+b.dataset.iso;if(b.dataset.f)st.f=+b.dataset.f;show()}));
 show()})();
+
+/* The install bar: shown on a phone once the page's own button has scrolled out of sight, and not while the offer itself is on screen. */
+(function () {
+  var bar = document.querySelector('.stick'), first = document.querySelector('.hero .sbtn, .hero .btn'), offer = document.getElementById('get');
+  if (!bar || !first || !('IntersectionObserver' in window)) return;
+  var hero = true, atOffer = false;
+  function show() { bar.classList.toggle('on', !hero && !atOffer); }
+  new IntersectionObserver(function (e) { hero = e[0].isIntersecting; show(); }).observe(first);
+  if (offer) new IntersectionObserver(function (e) { atOffer = e[0].isIntersecting; show(); }, { threshold: 0.25 }).observe(offer);
+})();
