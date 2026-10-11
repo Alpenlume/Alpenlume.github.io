@@ -215,6 +215,9 @@ footer.pf{max-width:none;margin:0;padding:12vh max(28px,calc((100vw - 1240px)/2)
 .duo figcaption{margin-top:12px;padding:12px 14px;border-radius:16px}.duo figcaption b{display:block;font-size:15px;letter-spacing:-.01em}.duo figcaption span{display:block;margin-top:3px;font-size:13.5px;line-height:1.45;color:var(--mu)}
 .duo-note{margin:22px auto 0;max-width:640px;text-align:center;font-size:13px;color:var(--mu)}.duo-note span{display:inline-block;padding:8px 14px;border-radius:99px}
 @media(max-width:760px){.duo{flex-direction:column;align-items:center;gap:30px}.duo figure{flex:none;width:100%;max-width:560px}.duo .d-c{max-width:300px}}
+/* text in the app's accent colour, lightened until it reads at 4.5:1 on the night sky */
+.card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd,.convert .cv-note,.ms-k,.q .a a,.fold .in a,.sup a{color:color-mix(in srgb,var(--c) 52%,#fff)}
+.rail,.rail p{color:rgba(255,255,255,.66)}
 
 .dv{position:relative;width:100%;aspect-ratio:100/211.9;container-type:inline-size;flex:none;--e1:#E9E5DD;--e2:#B8B3A9;--e3:#6E6A63;--bt:#9d988e}
 .dv .sh{position:absolute;inset:0;border-radius:14.8cqw;box-shadow:0 7cqw 11cqw -3cqw rgba(0,0,0,.5),0 2.4cqw 4cqw rgba(0,0,0,.28)}
