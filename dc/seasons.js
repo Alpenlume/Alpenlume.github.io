@@ -1,22 +1,41 @@
-/* The four seasons of the page. The season is read from the visitor's own date (northern hemisphere):
-   winter  — snow falls in three depths; a cap of snow settles on the summit of the mountain and a drift slowly
-             gathers along the bottom of the window,
-   spring  — cherry-blossom petals tumble in three depths and come to rest; a meadow of grass, daisies and tulips
-             slowly comes up along the bottom, butterflies cross, a thin morning mist drifts,
-   summer  — shafts of light fall from the sun; seeds and pollen rise, butterflies cross by day, fireflies come out
-             as the page's own clock turns to dusk; a meadow with poppies, cornflowers and sunflowers grows,
-   autumn  — leaves tumble down and gather in a loose litter at the bottom.
+/* The four seasons of the page. The season comes from the visitor's own date (and the other half of the world
+   gets its own: a visitor in Sydney sees summer in December). Each season is a weather and something that
+   gathers along the bottom — and all of it follows the page's own clock: bluish and dim at night, warm at the
+   golden hours.
+   winter  — snow falls in three depths, a cap of snow settles on the summit and a drift gathers at the bottom;
+             a thin cold mist in the valley
+   spring  — cherry-blossom petals tumble and come to rest on a meadow of grass, daisies and tulips;
+             butterflies by day; a morning mist
+   summer  — shafts of light from the sun; a meadow with poppies, cornflowers and sunflowers; butterflies, seeds
+             and pollen by day, fireflies in the dusk
+   autumn  — leaves tumble in the gusts and gather in a litter that builds along the bottom; a warm mist
    Everything is drawn behind the page and stays in the colours of the page. Nothing is fetched.
-   ?season=winter|spring|summer|autumn shows one on purpose, ?season=off shows none. With "reduce motion" set,
-   one still picture of the season is drawn and nothing moves.
+   ?season=winter|spring|summer|autumn shows one on purpose (kept for the rest of the visit in this tab),
+   ?season=auto goes back to the date, ?season=off shows none; &age=600 shows how it looks after ten minutes on
+   the page. With "reduce motion" set, one still picture of the season is drawn and nothing moves.
    © 2026 Alpenlume. All rights reserved. */
 (function () {
   'use strict';
   var NAMES = ['winter', 'spring', 'summer', 'autumn'];
+
+  // the other half of the world: its seasons are the opposite ones
+  function southern() {
+    var tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    return /^(Australia\/|Antarctica\/|Pacific\/(Auckland|Fiji|Tongatapu|Norfolk|Chatham|Apia|Noumea|Port_Moresby|Efate|Guadalcanal)|America\/(Sao_Paulo|Argentina\/|Buenos_Aires|Santiago|Montevideo|Asuncion|La_Paz|Campo_Grande|Cuiaba|Bahia|Curitiba|Recife|Fortaleza)|Africa\/(Johannesburg|Maputo|Harare|Lusaka|Windhoek|Gaborone|Maseru|Mbabane|Blantyre|Lubumbashi|Luanda)|Indian\/(Antananarivo|Mauritius|Reunion)|Atlantic\/(Stanley|South_Georgia))/.test(tz);
+  }
+
+  // the visitor's choice: the address (?season=…) wins and is kept for the rest of the visit in this tab
   var asked = '';
   try { asked = new URLSearchParams(location.search).get('season') || ''; } catch (e) {}
+  try {
+    if (asked === 'auto') sessionStorage.removeItem('alp-season');
+    else if (asked) sessionStorage.setItem('alp-season', asked);
+    else asked = sessionStorage.getItem('alp-season') || '';
+  } catch (e) {}
   if (asked === 'off') return;
   var month = new Date().getMonth();
+  if (southern()) month = (month + 6) % 12;
   var season = NAMES.indexOf(asked) >= 0 ? asked : (month === 11 || month < 2 ? 'winter' : month < 5 ? 'spring' : month < 8 ? 'summer' : 'autumn');
   document.documentElement.setAttribute('data-season', season);
 
@@ -34,10 +53,11 @@
   var ctx = cv.getContext('2d');
   if (!ctx) return;
 
-  var W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+  var W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 1.5), lowQ = false;
   var parts = [], rest = [], glints = [], flies = [], last = 0, raf = 0, now = 0;
   var LEAF = ['#D9822B', '#C4501F', '#E8B23A', '#A63A1B', '#9A7424', '#CF6A2A'];
   var PETAL = ['#FFC9DC', '#FFB0CA', '#FFFFFF', '#F594B8'];
+  var GREEN = ['#5E9E5A', '#78B266', '#4F8E55'];
   var TAU = 6.2832;
 
   // how long this visit has lasted (kept in the tab, so the seasons do not start again on every page)
@@ -46,13 +66,24 @@
     var saved = parseInt(sessionStorage.getItem('alp-snow-t0') || '', 10);
     if (saved > 0 && saved < Date.now()) t0 = saved; else sessionStorage.setItem('alp-snow-t0', String(t0));
   } catch (e) {}
+  try {                                   // &age=600: how the season looks after ten minutes (for looking at it)
+    var age = parseInt(new URLSearchParams(location.search).get('age') || '', 10);
+    if (age > 0) t0 = Date.now() - age * 1000;
+  } catch (e) {}
   function secs() { return (Date.now() - t0) / 1000; }
   function rnd(a, b) { return a + Math.random() * (b - a); }
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
   function sstep(a, b, x) { var u = clamp((x - a) / (b - a), 0, 1); return u * u * (3 - 2 * u); }
-  function wind() { return Math.sin(now / 5200) * 12 + Math.sin(now / 2300 + 1.3) * 5; }
 
-  // the page's own clock (the "05:30" in the bar, which turns with the scroll): by day or in the dusk?
+  // the wind, with now and then a gust (strongest in autumn)
+  var GUST = { winter: 0.6, spring: 0.5, summer: 0.3, autumn: 1 };
+  function wind() {
+    var g = Math.sin(now / 7300 + 1.1);
+    g = g > 0.82 ? (g - 0.82) / 0.18 : 0;
+    return Math.sin(now / 5200) * 12 + Math.sin(now / 2300 + 1.3) * 5 + g * g * 70 * GUST[season];
+  }
+
+  // the page's own clock (the "05:30" in the bar, which turns with the scroll)
   var hrV = 12, hrT = -1e9;
   function hourNow(t) {
     if (t - hrT > 250) {
@@ -67,6 +98,17 @@
     if (h >= 18) return (h - 18) / 3;
     if (h < 6.5) return 1 - (h - 4.5) / 2;
     return 0;
+  }
+  function warmth(h) {
+    return Math.max(sstep(5.0, 6.4, h) * (1 - sstep(7.4, 9.0, h)), sstep(16.4, 17.8, h) * (1 - sstep(19.0, 20.4, h)));
+  }
+  // everything drawn so far takes the light of the hour: blue and dim at night, warm at the golden hours
+  function grade(h) {
+    var ni = nightness(h), wm = warmth(h);
+    ctx.save(); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-atop';
+    if (ni > 0.02) { ctx.fillStyle = 'rgba(14,22,60,' + (0.4 * ni).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
+    if (wm > 0.02) { ctx.fillStyle = 'rgba(255,160,80,' + (0.15 * wm).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
+    ctx.restore();
   }
   function sunPos() {
     var el = document.getElementById('sun');
@@ -145,7 +187,7 @@
     ctx.lineTo(pts[n - 1][0], pts[n - 1][1]);
   }
 
-  // 0 → 1; quickly at first, then slowly. The summit comes down in a few minutes, the drift in a quarter of an hour.
+  // 0 → 1; quickly at first, then slowly
   function summitLevel() { return Math.min(1, 0.16 + 0.84 * (1 - Math.exp(-secs() / 70))); }
   function driftLevel() { return Math.min(1, 0.12 + 0.88 * (1 - Math.exp(-secs() / 260))); }
   function bloomLevel() { return Math.min(1, 0.3 + 0.7 * (1 - Math.exp(-secs() / 160))); }
@@ -176,7 +218,8 @@
     ctx.save();
     var g = ctx.createLinearGradient(0, ys, 0, ys + depth * 1.25);
     g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.5, 'rgba(250,252,255,1)'); g.addColorStop(1, 'rgba(208,224,250,.97)');
-    ctx.fillStyle = g; ctx.shadowColor = 'rgba(255,255,255,.65)'; ctx.shadowBlur = 12;
+    ctx.fillStyle = g;
+    if (!lowQ) { ctx.shadowColor = 'rgba(255,255,255,.65)'; ctx.shadowBlur = 12; }
     path(); ctx.fill();
     ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
     ctx.save(); path(); ctx.clip();
@@ -236,6 +279,43 @@
     ctx.restore();
   }
 
+  // a snow crystal: three crossing lines, each with two small forks
+  function crystal(x, y, r, rot, a) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.globalAlpha = a; ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    for (var j = 0; j < 3; j++) {
+      var an = j * Math.PI / 3, c = Math.cos(an), s = Math.sin(an), R = r * 1.7;
+      ctx.moveTo(-c * R, -s * R); ctx.lineTo(c * R, s * R);
+      for (var e = -1; e <= 1; e += 2) {
+        var bx = c * R * 0.55 * e, by = s * R * 0.55 * e;
+        ctx.moveTo(bx, by); ctx.lineTo(bx + Math.cos(an + 0.9) * R * 0.28, by + Math.sin(an + 0.9) * R * 0.28);
+        ctx.moveTo(bx, by); ctx.lineTo(bx + Math.cos(an - 0.9) * R * 0.28, by + Math.sin(an - 0.9) * R * 0.28);
+      }
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  // ───────────── mist and haze: lying in the valley, drifting slowly ─────────────
+  var MIST = { winter: [226, 236, 255, 0.2], spring: [255, 255, 255, 0.22], autumn: [255, 218, 176, 0.17] };
+  function drawMist(t) {
+    var c = MIST[season];
+    if (!c || lowQ) return;
+    for (var k = 0; k < 3; k++) {
+      var w = W * (0.55 + k * 0.12), x = ((t * 0.006 * (1 + k * 0.4) + k * W * 0.4) % (W * 1.5)) - W * 0.25, y = H - 26 - k * 16;
+      ctx.save(); ctx.translate(x, y); ctx.scale(1, 0.1 + k * 0.02);
+      var g = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.5);
+      g.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + c[3] + ')');
+      g.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0)');
+      ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, w * 0.5, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function drawHaze(day) {
+    var g = ctx.createLinearGradient(0, H * 0.72, 0, H);
+    g.addColorStop(0, 'rgba(255,196,110,0)'); g.addColorStop(1, 'rgba(255,196,110,' + (0.13 * day).toFixed(3) + ')');
+    ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, H * 0.72, W, H * 0.28);
+  }
+
   // ───────────────────── spring and summer: the meadow ─────────────────────
   var meadow = null, MH = 60;
   var BUT_SPRING = ['#FFF1A8', '#FFFFFF', '#BDD6FF', '#FFD8E6'];
@@ -252,7 +332,7 @@
   function buildMeadow() {
     var spring = season === 'spring', i;
     MH = clamp(H * 0.085, 38, 92);
-    var blades = [], nb = Math.round(clamp(W / 5.5, 90, 260));
+    var blades = [], nb = Math.round(clamp(W / 5.5, 90, 260) * (lowQ ? 0.6 : 1));
     for (i = 0; i < nb; i++) blades.push({ u: Math.random(), h: rnd(0.45, 1), lean: rnd(-0.32, 0.32), ph: rnd(0, TAU), layer: Math.random() < 0.42 ? 0 : 1, born: Math.random() });
     var flowers = [], nf = Math.round(clamp(W / 40, 12, 36)), sunN = 0;
     var kinds = spring ? ['daisy', 'daisy', 'tulip', 'blossom', 'blossom'] : ['poppy', 'poppy', 'corn', 'corn', 'daisy', 'sun'];
@@ -368,19 +448,6 @@
     ctx.restore();
   }
 
-  // a thin morning mist lying in the valley, drifting slowly
-  function drawMist(t) {
-    for (var k = 0; k < 3; k++) {
-      var w = W * (0.55 + k * 0.12), x = ((t * 0.006 * (1 + k * 0.4) + k * W * 0.4) % (W * 1.5)) - W * 0.25;
-      var y = H - 26 - k * 16;
-      ctx.save(); ctx.translate(x, y); ctx.scale(1, 0.1 + k * 0.02);
-      var g = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.5);
-      g.addColorStop(0, 'rgba(255,255,255,.22)'); g.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, w * 0.5, 0, TAU); ctx.fill();
-      ctx.restore();
-    }
-  }
-
   // shafts of warm light falling from the sun, behind everything
   function drawShafts(t, day) {
     var s = sunPos();
@@ -451,9 +518,10 @@
     cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
     cv.style.width = W + 'px'; cv.style.height = H + 'px';
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    var n = season === 'summer' ? clamp(Math.round(W * H / 22000), 18, 48)
-          : season === 'spring' ? clamp(Math.round(W * H / 21000), 20, 66)
-          : clamp(Math.round(W * H / 16000), 24, 100), i, k;
+    var q = lowQ ? 0.55 : 1;
+    var n = Math.round(q * (season === 'summer' ? clamp(Math.round(W * H / 22000), 18, 48)
+                    : season === 'spring' ? clamp(Math.round(W * H / 21000), 20, 66)
+                    : clamp(Math.round(W * H / 16000), 24, 100))), i, k;
     parts = [];
     for (i = 0; i < n; i++) parts.push(make(true));
     SK = W / LW; sky = null; lastRead = -1e9; summit.ok = false;
@@ -489,18 +557,42 @@
     ctx.restore();
   }
 
+  // the litter along the bottom: a low mound of fallen leaves that builds up as the visit goes on
+  function drawLitter() {
+    var d = clamp(0.25 + secs() / 700, 0, 1), hm = clamp(H * 0.045, 18, 48) * d, step = Math.max(8, W / 80), x, u, pts = [];
+    for (x = -step; x <= W + step * 2; x += step) {
+      u = x / Math.max(1, W);
+      pts.push([x, H - hm * (0.55 + 0.25 * Math.sin(u * 7 + 1) + 0.15 * Math.sin(u * 17 + 2) + 0.08 * Math.sin(u * 37))]);
+    }
+    var g = ctx.createLinearGradient(0, H - hm, 0, H);
+    g.addColorStop(0, 'rgba(214,122,44,0)'); g.addColorStop(0.35, 'rgba(206,112,40,.55)'); g.addColorStop(1, 'rgba(126,58,20,.85)');
+    ctx.globalAlpha = 1; ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(-step, H + 2); ctx.lineTo(pts[0][0], pts[0][1]); smooth(pts, false); ctx.lineTo(W + step * 2, H + 2); ctx.closePath(); ctx.fill();
+  }
+
   function addGlint(x, y) { glints.push({ x: x, y: y, life: 1 }); if (glints.length > 24) glints.shift(); }
 
+  var accT = 0, accN = 0;
   function frame(t) {
     var dt = last ? Math.min(0.05, (t - last) / 1000) : 0.016;
     last = t; now = t;
+    // a slow machine gets a lighter picture rather than a stuttering one
+    accT += dt; accN++;
+    if (accT > 2.5) {
+      if (!lowQ && accT / accN > 0.032) { lowQ = true; DPR = 1; resize(); }
+      accT = 0; accN = 0;
+    }
     ctx.clearRect(0, 0, W, H);
-    var i, p, wd = wind();
+    var i, p, wd = wind(), hr = hourNow(t), ni = nightness(hr), day = 1 - ni;
     if (season === 'winter') {
       if (t - lastRead > 160) readSky(t);
       var dl = driftLevel(), sn = glow('snow', 255, 255, 255, 0.75);
+      drawCap(t, summitLevel());
+      drawMist(t);
+      drawDrift(t, dl);
+      grade(hr);
       for (i = 0; i < parts.length; i++) {
-        p = parts[i]; p.ph += p.sp * dt; p.y += p.vy * dt; p.x += (Math.sin(p.ph) * p.sw + wd * (0.5 + p.z * 0.35)) * dt;
+        p = parts[i]; p.ph += p.sp * dt; p.rot += p.vr * dt * 0.5; p.y += p.vy * dt; p.x += (Math.sin(p.ph) * p.sw + wd * (0.5 + p.z * 0.35)) * dt;
         var gh = driftH(p.x, 2, dl);
         if (p.y > H - gh * 0.9) {
           if (p.z > 0 && Math.random() < 0.18) addGlint(p.x, H - gh);
@@ -508,19 +600,21 @@
           parts[i] = make(false); continue;
         }
         if (p.x < -12) p.x = W + 12; else if (p.x > W + 12) p.x = -12;
-        stamp(sn, p.x, p.y, p.r * 1.5, p.a);
+        if (p.z === 1 && p.r > 2.9) crystal(p.x, p.y, p.r, p.rot, 0.85);
+        else stamp(sn, p.x, p.y, p.r * 1.5, p.a);
       }
       for (i = glints.length - 1; i >= 0; i--) {
         var gl = glints[i]; gl.life -= dt * 2.2;
         if (gl.life <= 0) { glints.splice(i, 1); continue; }
         ctx.globalAlpha = gl.life * 0.8; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(gl.x, gl.y, 1.6 * gl.life + 0.4, 0, TAU); ctx.fill();
       }
-      ctx.globalAlpha = 1; drawCap(t, summitLevel()); drawDrift(t, dl);
     } else if (season === 'autumn') {
       var lg = ctx.createLinearGradient(0, H - 90, 0, H);
       var depth = Math.min(1, 0.2 + secs() / 600);
       lg.addColorStop(0, 'rgba(150,72,22,0)'); lg.addColorStop(1, 'rgba(150,72,22,' + (0.3 * depth) + ')');
+      drawMist(t);
       ctx.fillStyle = lg; ctx.fillRect(0, H - 90, W, 90);
+      drawLitter();
       for (i = 0; i < rest.length; i++) leaf(rest[i].x, rest[i].y, rest[i].r, rest[i].rot, rest[i].c, rest[i].a, rest[i].k, 0.8);
       for (i = 0; i < parts.length; i++) {
         p = parts[i]; p.ph += p.sp * dt; p.rot += p.vr * dt; p.fl += p.vf * dt; p.y += p.vy * dt; p.x += (Math.sin(p.ph) * p.sw + wd) * dt;
@@ -533,12 +627,13 @@
         var fc = Math.cos(p.fl);
         leaf(p.x, p.y, p.r, p.rot, p.c, 0.94, p.k, fc * 0.85 + (fc < 0 ? -0.15 : 0.15));
       }
+      grade(hr);
     } else if (season === 'spring') {
       var pg = glow('petal', 255, 205, 222, 0.35), pb = glow('petalbig', 255, 186, 210, 0.55), g = bloomLevel();
       drawMist(t);
       drawMeadow(t, wd, g);
       for (i = 0; i < rest.length; i++) cherry(rest[i].x, rest[i].y, rest[i].r, rest[i].rot, rest[i].c, rest[i].a * 0.85, 0.5);
-      for (i = 0; i < flies.length; i++) drawFly(flies[i], dt, 1);
+      for (i = 0; i < flies.length; i++) drawFly(flies[i], dt, day);
       for (i = 0; i < parts.length; i++) {
         p = parts[i]; p.ph += p.sp * dt; p.rot += p.vr * dt * 0.7; p.fl += p.vf * dt; p.y += p.vy * dt;
         p.x += p.vx * dt + (Math.sin(p.ph) * p.sw * 0.5 + wd * (0.6 + p.z * 0.3)) * dt;
@@ -547,34 +642,42 @@
             rest.push({ x: p.x, y: Math.min(H - 2, p.y), r: p.r * 0.7, rot: p.rot, c: p.c, a: rnd(0.55, 0.85) });
             if (rest.length > 50) rest.shift();
           }
-          parts[i] = make(false); parts[i].x = rnd(-60, W); continue;
+          parts[i] = make(false); continue;
         }
-        if (p.x > W + 24) { parts[i] = make(false); parts[i].x = rnd(-80, W * 0.6); continue; }
+        if (p.x > W + 24) {
+          var np = make(false);
+          if (np.y < 0) np.x = rnd(-80, W * 0.6);           // blown off the right edge: it comes in again from the left
+          parts[i] = np; continue;
+        }
         if (p.z === 2) { stamp(pb, p.x, p.y, p.r * 1.7, p.a); continue; }          // near: a soft pink bokeh
         if (p.z === 1) stamp(pg, p.x, p.y, p.r * 2.4, 0.3);
         cherry(p.x, p.y, p.r, p.rot, p.c, p.a, Math.cos(p.fl) * 0.8 + 0.2);
       }
-    } else if (season === 'summer') {
-      var h = hourNow(t), ni = nightness(h), day = 1 - ni, g2 = bloomLevel();
-      var fg = glow('fly', 255, 222, 128, 0.45), pl = glow('pollen', 255, 240, 200, 0.5);
+      grade(hr);
+    } else {
+      var fg = glow('fly', 255, 222, 128, 0.45), pl = glow('pollen', 255, 240, 200, 0.5), g2 = bloomLevel();
       drawShafts(t, day);
+      drawHaze(day);
       drawMeadow(t, wd, g2);
       for (i = 0; i < flies.length; i++) drawFly(flies[i], dt, day);
       for (i = 0; i < parts.length; i++) {
         p = parts[i]; p.ph += p.sp * dt;
-        if (p.z === 1) {                                 // a firefly wanders, and shows only in the dusk
-          p.x += (Math.sin(p.ph * 0.9 + p.rot) * 22 + wd * 0.2) * dt; p.y += Math.cos(p.ph * 0.7 + p.rot) * 16 * dt;
-          if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
-          if (p.y < H * 0.25) p.y += 30 * dt; else if (p.y > H - 8) p.y -= 30 * dt;
-          if (ni > 0.03) stamp(fg, p.x, p.y, p.r * 6.5, (0.25 + 0.7 * Math.pow(0.5 + 0.5 * Math.sin(p.ph * p.tw * 3), 2)) * ni);
-          continue;
-        }
+        if (p.z === 1) continue;                          // the fireflies come after the light of the hour
         p.y += p.vy * dt; p.x += (Math.sin(p.ph) * p.sw + wd * 0.5) * dt;
         if (p.y < -14) { parts[i] = make(false); continue; }
         if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
         if (day < 0.03) continue;
         if (p.z === 2) { p.rot += p.vr * 0.15 * dt; seed(p.x, p.y, p.r, p.rot, 0.8 * day); }
         else stamp(pl, p.x, p.y, p.r * 3, (0.3 + 0.5 * Math.abs(Math.sin(p.ph * p.tw * 2))) * 0.8 * day);
+      }
+      grade(hr);
+      for (i = 0; i < parts.length; i++) {
+        p = parts[i];
+        if (p.z !== 1) continue;
+        p.x += (Math.sin(p.ph * 0.9 + p.rot) * 22 + wd * 0.2) * dt; p.y += Math.cos(p.ph * 0.7 + p.rot) * 16 * dt;
+        if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
+        if (p.y < H * 0.25) p.y += 30 * dt; else if (p.y > H - 8) p.y -= 30 * dt;
+        if (ni > 0.03) stamp(fg, p.x, p.y, p.r * 6.5, (0.25 + 0.7 * Math.pow(0.5 + 0.5 * Math.sin(p.ph * p.tw * 3), 2)) * ni);
       }
     }
     ctx.globalAlpha = 1;
@@ -588,6 +691,7 @@
     if (season === 'winter') {
       readSky(0); drawCap(0, 0.8); drawDrift(0, 0.7);
     } else if (season === 'autumn') {
+      drawLitter();
       for (i = 0; i < 40; i++) { r = restOne(); leaf(r.x, r.y, r.r, r.rot, r.c, r.a, r.k, 0.8); }
     } else if (season === 'spring') {
       drawMeadow(0, 0, 0.85);
@@ -595,6 +699,7 @@
     } else {
       drawShafts(0, 0.8); drawMeadow(0, 0, 0.85);
     }
+    grade(hourNow(0));
     ctx.globalAlpha = 1;
   }
 
