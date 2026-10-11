@@ -208,6 +208,14 @@ footer.pf{max-width:none;margin:0;padding:12vh max(28px,calc((100vw - 1240px)/2)
 .ms-dial{display:flex;justify-content:center;gap:8px;margin-top:12px}.ms-dial span{font:600 14px/1 ui-monospace,Menlo,monospace;color:var(--mu);padding:8px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.16)}.ms-dial .on{color:var(--c);border-color:var(--c)}
 .ms-rd li{align-items:center}
 @media(max-width:520px){.ms-rd li{gap:10px;font-size:16px}.ms-ch{gap:4px;flex-wrap:nowrap}.ms-ch button{font-size:14px;padding:6px 9px}.ms-rd li>span:first-child{white-space:nowrap}}
+/* iPhone Duo: the editor closed, open and on half of the large screen — plain screens, no drawn device */
+.duo{display:flex;align-items:flex-end;justify-content:center;gap:clamp(14px,2.4vw,30px);max-width:1120px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
+.duo figure{margin:0;flex:calc(var(--r)) 1 0;min-width:0}
+.duo img{display:block;width:100%;height:auto;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.duo .d-c img{border-radius:1.7% 12.7% 12.7% 1.7%/1.2% 8.7% 8.7% 1.2%}.duo .d-o img{border-radius:2.2%/3.1%}.duo .d-h img{border-radius:3.4%/2.4%}
+.duo figcaption{margin-top:12px;padding:12px 14px;border-radius:16px}.duo figcaption b{display:block;font-size:15px;letter-spacing:-.01em}.duo figcaption span{display:block;margin-top:3px;font-size:13.5px;line-height:1.45;color:var(--mu)}
+.duo-note{margin:22px auto 0;max-width:640px;text-align:center;font-size:13px;color:var(--mu)}.duo-note span{display:inline-block;padding:8px 14px;border-radius:99px}
+@media(max-width:760px){.duo{flex-direction:column;align-items:center;gap:30px}.duo figure{flex:none;width:100%;max-width:520px}.duo .d-c,.duo .d-h{max-width:300px}}
 
 .dv{position:relative;width:100%;aspect-ratio:100/211.9;container-type:inline-size;flex:none;--e1:#E9E5DD;--e2:#B8B3A9;--e3:#6E6A63;--bt:#9d988e}
 .dv .sh{position:absolute;inset:0;border-radius:14.8cqw;box-shadow:0 7cqw 11cqw -3cqw rgba(0,0,0,.5),0 2.4cqw 4cqw rgba(0,0,0,.28)}
