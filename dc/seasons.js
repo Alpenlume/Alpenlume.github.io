@@ -1,5 +1,5 @@
 /* The four seasons of the page. The season is read from the visitor's own date (northern hemisphere):
-   winter  — snow falls and settles on the mountains (and on the ground where there is no mountain),
+   winter  — snow falls, and a cap of snow settles on the summit of the mountain and slowly grows down it,
    spring  — blossom petals drift across,
    summer  — warm pollen and fireflies rise in the dusk,
    autumn  — leaves fall and gather at the bottom.
@@ -36,12 +36,11 @@
   var LEAF = ['#D9822B', '#C4501F', '#E8B23A', '#A63A1B', '#8C6A24', '#CF6A2A'];
   var PETAL = ['#FFD3E0', '#FFFFFF', '#FFC1D5', '#F8E1EC'];
 
-  // — winter: the snow lies on the skyline of the mountains the page itself draws (#world), read from that canvas —
+  // — winter: the summit of the mountain the page itself draws (#world) is found in that canvas, and a cap of snow
+  //   lies on it down to a snow line that creeps lower the longer the visitor stays —
   var LW = 200, LH = 100, SK = 0;          // columns of the skyline, rows read, px per column
   var sky = null;                          // y of the first mountain pixel in each column (H where there is none)
-  var snow = null;                         // thickness of snow in each column, px
-  var ground = null, capGround = 40;       // the valley floor in front of the mountains: snow lying along the bottom
-  var capSnow = 22;                        // the most snow a flat place keeps
+  var summit = { x: 0, y: 0, ok: false, seen: 0 };
   var probe = document.createElement('canvas');
   var pctx = probe.getContext('2d', { willReadFrequently: true });
   var lastRead = -1e9;
@@ -63,6 +62,7 @@
     var d;
     try { d = pctx.getImageData(0, 0, LW, LH).data; } catch (e) { return; }
     var s = sky || new Float32Array(LW);
+    var best = -1;
     for (var x = 0; x < LW; x++) {
       var found = H;
       for (var y = 0; y < LH - 5; y++) {
@@ -72,26 +72,36 @@
         if (ok) { found = y / LH * H; break; }
       }
       s[x] = found;
+      if (found < H - 4 && (best < 0 || found < s[best])) best = x;
     }
     sky = s; lastRead = now;
+    // a summit is a real peak: clearly lower on both sides, not the edge of the window
+    var ok2 = false;
+    if (best > 0) {
+      var span = Math.round(LW * 0.12);
+      var l = s[Math.max(0, best - span)], r = s[Math.min(LW - 1, best + span)];
+      ok2 = best > 2 && best < LW - 3 && l > s[best] + H * 0.05 && r > s[best] + H * 0.05;
+    }
+    if (ok2) {
+      var nx = (best + 0.5) * SK, ny = s[best];
+      if (summit.ok) { summit.x += (nx - summit.x) * 0.4; summit.y += (ny - summit.y) * 0.4; }
+      else { summit.x = nx; summit.y = ny; }
+      summit.ok = true;
+    } else summit.ok = false;
   }
 
   function skyAt(i) { return sky ? sky[Math.max(0, Math.min(LW - 1, i))] : H; }
 
-  // snow keeps best on flat ground and slides off the steep parts
-  function room(i) {
-    var slope = Math.abs(skyAt(i + 1) - skyAt(i - 1)) / (2 * SK);
-    // lower than both sides = a valley, where the snow gathers
-    var valley = Math.max(0, skyAt(i) - (skyAt(i - 7) + skyAt(i + 7)) * 0.5) / H;
-    return capSnow * (1 + Math.min(1.1, valley * 9)) / (1 + slope * 1.1);
+  // how far the snow has come down: 0 → 1, quickly at first, then slowly; remembered for the visit
+  function level() {
+    var secs = (Date.now() - t0) / 1000;
+    return Math.min(1, 0.16 + 0.84 * (1 - Math.exp(-secs / 70)));
   }
 
   function make(initial) {
     var p = { x: rnd(0, W), y: initial ? rnd(-20, H) : rnd(-40, -4), ph: rnd(0, 6.28), rot: rnd(0, 6.28), vr: rnd(-1.2, 1.2) };
     if (season === 'winter') {
-      p.r = rnd(1.7, 4.6); p.vy = rnd(24, 54) * (0.55 + p.r / 6); p.sw = rnd(10, 26); p.sp = rnd(0.5, 1.4);
-      p.near = Math.random() < 0.34;           // in front of the mountains: bigger, quicker, lands in the valley floor
-      if (p.near) { p.r *= 1.4; p.vy *= 1.3; }
+      p.r = rnd(1.5, 4.2); p.vy = rnd(24, 54) * (0.55 + p.r / 6); p.sw = rnd(10, 26); p.sp = rnd(0.5, 1.4);
     } else if (season === 'autumn') {
       p.r = rnd(9, 17); p.vy = rnd(28, 58); p.sw = rnd(26, 60); p.sp = rnd(0.5, 1.2); p.c = LEAF[(Math.random() * LEAF.length) | 0];
     } else if (season === 'spring') {
@@ -111,17 +121,7 @@
     parts = [];
     for (var i = 0; i < n; i++) parts.push(make(true));
     SK = W / LW;
-    capSnow = Math.max(14, Math.min(30, H * 0.034));
-    capGround = Math.max(40, Math.min(112, H * 0.1));
-    sky = null; lastRead = -1e9;
-    // snow that fell earlier in this visit (this tab) is already lying there
-    var already = Math.min(capSnow * 0.7, 3 + (Date.now() - t0) / 1000 * 0.12);
-    snow = new Float32Array(LW);
-    ground = new Float32Array(LW);
-    for (var j = 0; j < LW; j++) {
-      snow[j] = season === 'winter' ? already * (0.75 + 0.25 * Math.sin(j * 0.5)) : 0;
-      ground[j] = season === 'winter' ? Math.min(capGround * 0.85, 12 + already * 2.2) * (0.8 + 0.2 * Math.sin(j * 0.31)) : 0;
-    }
+    sky = null; lastRead = -1e9; summit.ok = false;
     rest = [];
     if (season === 'autumn') for (var k = 0; k < 14; k++) rest.push({ x: rnd(0, W), y: H - rnd(2, 20), r: rnd(9, 15), rot: rnd(0, 6.28), c: LEAF[(Math.random() * LEAF.length) | 0] });
   }
@@ -133,67 +133,59 @@
     ctx.restore();
   }
 
-  // the snow cover: a white band that follows the skyline, as thick as the snow in each column
-  function drawSnow() {
-    if (!snow) return;
-    var i, x, yTop;
+  // The snow cap: everything of the summit that lies above a snow line. The line is not straight — it wanders, and
+  // it lies a little lower on the shaded side — and it comes down as the visit goes on.
+  function drawCap(t, lvl) {
+    if (!sky || !summit.ok) return;
+    var depth = Math.max(60, Math.min(170, H * 0.2)) * lvl;
+    var amp = Math.max(3, depth * 0.1);
+    var xs = summit.x, ys = summit.y;
+    function line(x) {
+      var w = Math.sin(x * 0.045) * 1.0 + Math.sin(x * 0.113 + 1.3) * 0.65 + Math.sin(x * 0.27 + 0.4) * 0.35;
+      return ys + depth + w * amp + (x > xs ? depth * 0.12 : 0);
+    }
+    var ci = Math.max(0, Math.min(LW - 1, (xs / SK) | 0)), lo = ci, hi = ci, i;
+    while (lo > 0 && skyAt(lo - 1) < line((lo - 0.5) * SK)) lo--;
+    while (hi < LW - 1 && skyAt(hi + 1) < line((hi + 1.5) * SK)) hi++;
+    if (hi - lo < 1) return;
+    var top = [], bot = [];
+    for (i = lo; i <= hi; i++) {
+      var x = (i + 0.5) * SK, y0 = skyAt(i);
+      top.push([x, y0 - 0.5]);
+      bot.push([x, Math.max(y0 + 1, line(x))]);
+    }
+    function path() {
+      ctx.beginPath(); ctx.moveTo(top[0][0], top[0][1]);
+      for (i = 1; i < top.length; i++) ctx.lineTo(top[i][0], top[i][1]);
+      for (i = bot.length - 1; i >= 0; i--) ctx.lineTo(bot[i][0], bot[i][1]);
+      ctx.closePath();
+    }
     ctx.save();
-    ctx.globalAlpha = 1;
-    var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, 'rgba(255,255,255,.98)'); g.addColorStop(1, 'rgba(214,228,250,.98)');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    for (i = 0; i < LW; i++) {
-      x = (i + 0.5) * SK; yTop = skyAt(i) - snow[i] - 0.5;
-      if (i === 0) ctx.moveTo(0, yTop); ctx.lineTo(x, yTop);
-    }
-    ctx.lineTo(W, skyAt(LW - 1) - snow[LW - 1]);
-    for (i = LW - 1; i >= 0; i--) { x = (i + 0.5) * SK; ctx.lineTo(x, Math.min(H, skyAt(i) + 2.5 + snow[i] * 0.35)); }
-    ctx.closePath(); ctx.fill();
+    // the lit face is white, falling to a pale blue towards the snow line
+    var g = ctx.createLinearGradient(0, ys, 0, ys + depth * 1.2);
+    g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.55, 'rgba(250,252,255,1)'); g.addColorStop(1, 'rgba(214,228,250,0.96)');
+    ctx.fillStyle = g; ctx.shadowColor = 'rgba(255,255,255,.7)'; ctx.shadowBlur = 10;
+    path(); ctx.fill();
+    ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
+    // the shaded face, to the right of the summit, takes a cool blue-grey
+    ctx.save(); path(); ctx.clip();
+    ctx.fillStyle = 'rgba(150,172,214,.42)';
+    ctx.beginPath(); ctx.moveTo(xs, ys - 4); ctx.lineTo(xs + depth * 0.1, ys + depth * 0.5); ctx.lineTo(xs + depth * 0.38, ys + depth * 1.6);
+    ctx.lineTo(W + 10, ys + depth * 1.6); ctx.lineTo(W + 10, ys - 4); ctx.closePath(); ctx.fill();
     ctx.restore();
-  }
-
-  // the valley floor: a drift along the bottom of the window, in front of the mountains and their pines
-  function drawGround() {
-    if (!ground) return;
-    var i;
-    ctx.save();
-    var g = ctx.createLinearGradient(0, H - capGround, 0, H);
-    g.addColorStop(0, 'rgba(255,255,255,.97)'); g.addColorStop(1, 'rgba(205,221,248,.98)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, H);
-    for (i = 0; i < LW; i++) ctx.lineTo((i + 0.5) * SK, H - ground[i]);
-    ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    // a fine blue edge where the snow stops, and a few glints
+    ctx.strokeStyle = 'rgba(112,140,196,.38)'; ctx.lineWidth = 1.2; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(bot[0][0], bot[0][1]);
+    for (i = 1; i < bot.length; i++) ctx.lineTo(bot[i][0], bot[i][1]);
+    ctx.stroke();
+    for (var gk = 0; gk < 4; gk++) {
+      var gx = xs + (gk - 1.5) * depth * 0.35, gy = ys + depth * (0.18 + 0.16 * gk);
+      var ga = Math.max(0, Math.sin(t / 900 + gk * 1.9)) * 0.9;
+      if (ga < 0.05) continue;
+      ctx.globalAlpha = ga; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(gx - 6, gy); ctx.lineTo(gx + 6, gy); ctx.moveTo(gx, gy - 6); ctx.lineTo(gx, gy + 6); ctx.stroke();
+    }
     ctx.restore();
-  }
-
-  function landGround(p) {
-    var i = Math.max(0, Math.min(LW - 1, (p.x / SK) | 0));
-    var add = p.r * 0.3;
-    for (var d = -3; d <= 3; d++) {
-      var j = i + d;
-      if (j >= 0 && j < LW && ground[j] < capGround) ground[j] = Math.min(capGround, ground[j] + add * (1 - Math.abs(d) / 4));
-    }
-  }
-
-  function land(p) {
-    var i = Math.max(0, Math.min(LW - 1, (p.x / SK) | 0));
-    var add = p.r * 0.34;
-    for (var d = -2; d <= 2; d++) {
-      var j = i + d;
-      if (j < 0 || j >= LW) continue;
-      var lim = room(j);
-      if (snow[j] < lim) snow[j] = Math.min(lim, snow[j] + add * (1 - Math.abs(d) / 3));
-    }
-  }
-
-  function settle() {
-    for (var i = 1; i < LW - 1; i++) {
-      var avg = (snow[i - 1] + snow[i + 1]) * 0.5;
-      snow[i] += (avg - snow[i]) * 0.03;
-      var lim = room(i);
-      if (snow[i] > lim) snow[i] += (lim - snow[i]) * 0.05;     // what the slope cannot hold slips off
-      ground[i] += ((ground[i - 1] + ground[i + 1]) * 0.5 - ground[i]) * 0.04;
-    }
   }
 
   function frame(t) {
@@ -202,22 +194,15 @@
     ctx.clearRect(0, 0, W, H);
     var i, p;
     if (season === 'winter') {
-      if (t - lastRead > 140) readSky(t);
-      settle();
+      if (t - lastRead > 160) readSky(t);
       for (i = 0; i < parts.length; i++) {
         p = parts[i]; p.ph += p.sp * dt; p.y += p.vy * dt; p.x += Math.sin(p.ph) * p.sw * dt;
-        var col = Math.max(0, Math.min(LW - 1, (p.x / SK) | 0));
-        if (p.near) {
-          if (p.y > H - ground[col] - 1) { landGround(p); parts[i] = make(false); continue; }
-        } else if (p.y > skyAt(col) - snow[col] - 1) {
-          if (skyAt(col) >= H - 2) landGround(p); else land(p);
-          parts[i] = make(false); continue;
-        }
+        if (p.y > H + 8) { parts[i] = make(false); continue; }
         if (p.x < -10) p.x = W + 10; else if (p.x > W + 10) p.x = -10;
-        ctx.globalAlpha = 0.7 + p.r / 16; ctx.fillStyle = '#fff';
+        ctx.globalAlpha = 0.62 + p.r / 14; ctx.fillStyle = '#fff';
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
       }
-      ctx.globalAlpha = 1; drawSnow(); drawGround();
+      ctx.globalAlpha = 1; drawCap(t, level());
     } else if (season === 'autumn') {
       for (i = 0; i < rest.length; i++) drawLeaf(rest[i].x, rest[i].y, rest[i].r, rest[i].rot, rest[i].c, 0.9);
       for (i = 0; i < parts.length; i++) {
@@ -256,8 +241,7 @@
     var i;
     if (season === 'winter') {
       readSky(0);
-      for (i = 0; i < LW; i++) { snow[i] = room(i) * 0.8; ground[i] = capGround * 0.7 * (0.85 + 0.15 * Math.sin(i * 0.31)); }
-      drawSnow(); drawGround();
+      drawCap(0, 0.8);
     } else if (season === 'autumn') {
       for (i = 0; i < 40; i++) drawLeaf(rnd(0, W), H - rnd(2, 28), rnd(9, 15), rnd(0, 6.28), LEAF[(Math.random() * LEAF.length) | 0], 0.9);
     }
