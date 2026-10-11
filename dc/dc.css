@@ -218,6 +218,12 @@ footer.pf{max-width:none;margin:0;padding:12vh max(28px,calc((100vw - 1240px)/2)
 /* text in the app's accent colour, lightened until it reads at 4.5:1 on the night sky */
 .card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd,.convert .cv-note,.ms-k,.q .a a,.fold .in a,.sup a{color:color-mix(in srgb,var(--c) 52%,#fff)}
 .rail,.rail p{color:rgba(255,255,255,.66)}
+/* the seasons (seasons.js): a tint over the sky and mountains, and one canvas of falling things behind the page */
+#stint,#season{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-4}
+[data-season=winter] #stint{background:linear-gradient(180deg,rgba(150,190,255,.22),rgba(235,243,255,.10) 62%,rgba(205,224,255,.26));mix-blend-mode:screen}
+[data-season=spring] #stint{background:linear-gradient(180deg,rgba(255,196,214,.16),rgba(190,235,190,.10) 65%,rgba(150,214,160,.20));mix-blend-mode:screen}
+[data-season=summer] #stint{background:linear-gradient(180deg,rgba(255,206,110,.14),rgba(255,170,70,.08) 60%,rgba(255,140,60,.18));mix-blend-mode:screen}
+[data-season=autumn] #stint{background:linear-gradient(180deg,rgba(255,148,60,.20),rgba(205,92,32,.12) 60%,rgba(150,60,22,.22));mix-blend-mode:screen}
 
 .dv{position:relative;width:100%;aspect-ratio:100/211.9;container-type:inline-size;flex:none;--e1:#E9E5DD;--e2:#B8B3A9;--e3:#6E6A63;--bt:#9d988e}
 .dv .sh{position:absolute;inset:0;border-radius:14.8cqw;box-shadow:0 7cqw 11cqw -3cqw rgba(0,0,0,.5),0 2.4cqw 4cqw rgba(0,0,0,.28)}
