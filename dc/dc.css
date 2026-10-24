@@ -217,7 +217,12 @@ footer.pf{max-width:none;margin:0;padding:12vh max(28px,calc((100vw - 1240px)/2)
 @media(max-width:760px){.duo{flex-direction:column;align-items:center;gap:30px}.duo figure{flex:none;width:100%;max-width:560px}.duo .d-c{max-width:300px}}
 /* text in the app's accent colour, lightened until it reads at 4.5:1 on the night sky */
 .card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd,.convert .cv-note,.ms-k,.q .a a,.fold .in a,.sup a{color:color-mix(in srgb,var(--c) 52%,#fff)}
-.rail,.rail p{color:rgba(255,255,255,.66)}
+.rail{color:rgba(255,255,255,.66)}
+/* the steps sit on cards (white by day, dark at night): their words follow the card, never the sky behind the rail */
+.rail .step,.rail .step p{color:var(--mu)}.rail .step h3{color:var(--tx)}
+/* the accent lightened for the night sky is far too pale on a day card: darkened there until it reads */
+body.t-day :is(.card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd,.convert .cv-note,.ms-k,.q .a a,.fold .in a,.sup a,.sfx .kick b),
+body.t-dusk :is(.card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd,.convert .cv-note,.ms-k,.q .a a,.fold .in a,.sup a,.sfx .kick b){color:color-mix(in srgb,var(--c) 56%,#000)}
 /* the seasons (seasons.js): a tint over the sky and mountains, and one canvas of falling things behind the page */
 #stint,#season{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-4}
 [data-season=winter] #stint{background:linear-gradient(180deg,rgba(150,190,255,.22),rgba(235,243,255,.10) 62%,rgba(205,224,255,.26));mix-blend-mode:screen}
