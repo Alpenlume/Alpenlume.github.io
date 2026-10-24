@@ -10,7 +10,7 @@
 - [Photolume Studio](https://alpenlume.github.io/filmlume.html): Photo editor for iPhone and iPad
 - [Meterlume](https://alpenlume.github.io/meterlume.html): Film light meter · 35 mm and 120
 - [Weddinglume](https://alpenlume.github.io/weddinglume.html): A wedding, wherever it is held
-- [DocuLume Pro](https://alpenlume.github.io/doculume.html): Docs, PDF, scan
+- [Pagewright](https://alpenlume.github.io/pagewright.html): Docs, PDF, scan
 - [Fornela](https://alpenlume.github.io/fornela.html): Kitchen and shopping
 - [Sharpfield](https://alpenlume.github.io/sharpfield-full-frame.html): Full frame optics
 - [Melopocket](https://alpenlume.github.io/melopocket.html): Music and podcasts
