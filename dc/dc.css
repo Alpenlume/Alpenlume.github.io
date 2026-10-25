@@ -99,6 +99,9 @@ footer .r{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;mar
 
 .store{display:inline-block;margin:10px 8px 0;padding:11px 20px;border-radius:999px;background:rgba(16,22,48,.62);color:#fff;border:1px solid rgba(255,255,255,.3);font-weight:500;backdrop-filter:blur(6px);transition:.25s}.store:hover{background:rgba(16,22,48,.82)}.fin .store{margin:0 12px 12px 0}
 
+/* width/height attributes reserve the space; the height follows the width */
+img{height:auto}
+
 /* ── sections shared by the app pages ─────────────────────────────── */
 html[lang=ja] h1,html[lang=ja] h2,html[lang=ja] h3,html[lang=zh] h1,html[lang=zh] h2,html[lang=zh] h3{letter-spacing:0!important;line-height:1.18!important}
 html[lang=ja] body,html[lang=zh] body{line-height:1.7}
