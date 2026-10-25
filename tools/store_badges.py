@@ -31,8 +31,20 @@ ALT = {
     "ja": "App Storeからダウンロード",
     "zh": "在 App Store 下载"
 }
+MAC_ALT = {
+    "en": "View in the Mac App Store",
+    "de": "Im Mac App Store ansehen",
+    "pl": "Zobacz w Mac App Store",
+    "fr": "Voir sur le Mac App Store",
+    "it": "Vedi sul Mac App Store",
+    "es": "Ver en el Mac App Store",
+    "ru": "Открыть в Mac App Store",
+    "el": "Δες το στο Mac App Store",
+    "ja": "Mac App Storeで見る",
+    "zh": "在 Mac App Store 查看"
+}
 COUNTRIES = ("us", "ch", "de", "gb", "pl")
-PILL = re.compile(r'<span class="(?:sbtn|btn) soon" data-asc="(\d+)">.*?</span>', re.S)
+PILL = re.compile(r'<span class="(?:sbtn|btn) soon" data-asc="(\d+)"( data-mac="1")?>.*?</span>', re.S)
 FORCED = set(filter(None, os.environ.get("STORE_FORCE_LIVE", "").split(",")))
 _cache = {}
 
@@ -68,8 +80,9 @@ def main():
             if not app_id or not on_sale(app_id):
                 return m.group(0)
             swapped[app_id] = swapped.get(app_id, 0) + 1
-            return (f'<a class="badge" href="https://apps.apple.com/app/id{app_id}" target="_blank" rel="noopener">'
-                    f'<img src="{prefix}dc/media/badges/{lang}.svg" alt="{ALT[lang]}" width="156" height="52"></a>')
+            mac = bool(m.group(2))
+            return (f'<a class="badge" href="https://apps.apple.com/app/id{app_id}{"?platform=mac" if mac else ""}" target="_blank" rel="noopener">'
+                    f'<img src="{prefix}dc/media/badges/{"mac-" if mac else ""}{lang}.svg" alt="{MAC_ALT[lang] if mac else ALT[lang]}" width="156" height="52"></a>')
 
         fresh = PILL.sub(swap, text)
         if fresh != text:

@@ -191,6 +191,16 @@ nav .logo:hover{transform:translateY(-2px)}
 /* the dark veil behind the top bar was painted over the logo and made it grey: the bar's content now sits above it */
 nav .in{position:relative;z-index:1}
 
+/* Pagewright on the Mac */
+.macsec .hd{text-align:center}.macsec .hd .kick{display:inline-block;margin-bottom:10px}
+.macgal{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:1180px;margin:34px auto 0}
+.macgal .mf{margin:0;padding:12px 12px 16px;border-radius:26px}
+.macgal .mf img{display:block;width:100%;height:auto;border-radius:16px}
+.macgal .mf figcaption{padding:14px 10px 0;font-weight:500;font-size:16px;text-align:center}
+.macgal .lead{grid-column:1/-1}
+.macbtn{text-align:center;margin-top:26px}
+@media(max-width:700px){.macgal{grid-template-columns:1fr}}
+
 /* ── sections shared by the app pages ─────────────────────────────── */
 html[lang=ja] h1,html[lang=ja] h2,html[lang=ja] h3,html[lang=zh] h1,html[lang=zh] h2,html[lang=zh] h3{letter-spacing:0!important;line-height:1.18!important}
 html[lang=ja] body,html[lang=zh] body{line-height:1.7}
