@@ -117,6 +117,14 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ff
 .row a.pr{display:inline-flex;align-items:center;min-height:44px;padding:0 6px;margin:0 -6px}
 .tag b,.tag span{font-size:13px!important}
 
+/* The bar stays legible over whatever scrolls under it; on touch screens search says "Search" with a magnifier, not a keyboard shortcut */
+nav:has(.logo){-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:linear-gradient(180deg,rgba(14,16,40,.58),rgba(14,16,40,.28) 70%,rgba(14,16,40,0))}
+@media(max-width:620px),(hover:none){
+.kbd kbd{display:none}
+.kbd span{display:inline}
+.kbd::before{content:"";width:16px;height:16px;flex:none;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M16 16l5 5'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M16 16l5 5'/%3E%3C/svg%3E") center/contain no-repeat}
+}
+
 /* ── sections shared by the app pages ─────────────────────────────── */
 html[lang=ja] h1,html[lang=ja] h2,html[lang=ja] h3,html[lang=zh] h1,html[lang=zh] h2,html[lang=zh] h3{letter-spacing:0!important;line-height:1.18!important}
 html[lang=ja] body,html[lang=zh] body{line-height:1.7}
