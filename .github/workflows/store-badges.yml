@@ -1,0 +1,24 @@
+name: Store badges
+# Every six hours: an app that has gone on sale gets Apple's official badge in place of "Coming to the App Store".
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  badges:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swap the pills of apps that are on sale
+        run: python3 tools/store_badges.py | tee /tmp/badges.txt
+      - name: Publish the change
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "App Store badge: $(grep -o 'id[0-9]*' /tmp/badges.txt | tr '\n' ' ')"
+            git push
+          fi
