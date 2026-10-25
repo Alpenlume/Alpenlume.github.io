@@ -102,6 +102,21 @@ footer .r{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;mar
 /* width/height attributes reserve the space; the height follows the width */
 img{height:auto}
 
+/* Reading and touch (25.10.2026): every control has a 44 px hit area, small text is at least 13 px, the chips stay readable over the mountain */
+.dots button{position:relative}
+.dots button::before{content:"";position:absolute;inset:-18px -9px}
+nav .logo{min-height:44px;display:inline-flex;align-items:center}
+.rt .kbd,.rt .lang>button{min-height:44px}
+.cta .gbtn,.sbtn{min-height:44px}
+.chips span{background:rgba(16,22,48,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.kick,small,.kick *{font-size:13px!important}
+.pf a{display:inline-block;padding:12px 6px;margin:-12px -6px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #fff;outline-offset:3px;border-radius:8px}
+.fold a{display:inline-block;padding:12px 4px;margin:-12px -4px}
+.langs a{min-height:44px;display:inline-flex;align-items:center}
+.row a.pr{display:inline-flex;align-items:center;min-height:44px;padding:0 6px;margin:0 -6px}
+.tag b,.tag span{font-size:13px!important}
+
 /* ── sections shared by the app pages ─────────────────────────────── */
 html[lang=ja] h1,html[lang=ja] h2,html[lang=ja] h3,html[lang=zh] h1,html[lang=zh] h2,html[lang=zh] h3{letter-spacing:0!important;line-height:1.18!important}
 html[lang=ja] body,html[lang=zh] body{line-height:1.7}
