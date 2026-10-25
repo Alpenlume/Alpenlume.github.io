@@ -126,6 +126,53 @@ nav:has(.logo){-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);backg
 }
 .ms-dial span.on{color:#A63C14!important}
 
+/* ───────── Liquid glass (26.10.2026) ─────────
+   Cards, buttons and chips get the material of the newest Apple design language: a lit upper edge, a soft bevel, a deep layered shadow,
+   a strong blur with extra colour, and — when a pointer rests on them — a light that follows it, tinted with the app's own colour. */
+:root{--glass-hi:rgba(255,255,255,.62);--glass-lo:rgba(10,10,50,.07)}
+body.t-night{--glass-hi:rgba(255,255,255,.2);--glass-lo:rgba(0,0,0,.35)}
+.card,.glass{
+  border:1px solid rgba(255,255,255,.5);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,0) 42%);
+  -webkit-backdrop-filter:blur(26px) saturate(1.55);backdrop-filter:blur(26px) saturate(1.55);
+  box-shadow:0 1px 0 var(--glass-hi) inset,0 -1px 0 var(--glass-lo) inset,0 44px 90px -42px rgba(10,10,50,.7),0 10px 28px -14px rgba(10,10,50,.3);
+}
+body.t-night .card,body.t-night .glass{border-color:rgba(255,255,255,.18);background-image:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 40%)}
+.card:hover,.glass:hover{background-image:radial-gradient(520px 320px at var(--mx,50%) var(--my,0%),color-mix(in srgb,var(--c,#E8532B) 17%,transparent),transparent 62%),linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,0) 42%)}
+body.t-night .card:hover,body.t-night .glass:hover{background-image:radial-gradient(520px 320px at var(--mx,50%) var(--my,0%),color-mix(in srgb,var(--c,#E8532B) 26%,transparent),transparent 62%),linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 40%)}
+.gbtn,.store,.sbtn.soon,.chips span,.tag{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.03));
+  -webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 -1px 0 rgba(0,0,0,.12) inset,0 16px 30px -18px rgba(0,0,0,.65);
+}
+.gbtn,.store{transition:transform .35s cubic-bezier(.2,.8,.2,1),background-color .25s,box-shadow .35s}
+.gbtn:hover,.store:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 20px 36px -16px color-mix(in srgb,var(--c,#E8532B) 55%,#000)}
+.gbtn:active,.store:active,.sbtn:active{transform:translateY(0) scale(.985)}
+.sbtn:not(.soon){background:linear-gradient(180deg,#fff,#ebe8f6);box-shadow:0 1px 0 #fff inset,0 -1px 0 rgba(0,0,0,.08) inset,0 22px 40px -16px color-mix(in srgb,var(--c,#E8532B) 62%,#000);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.sbtn:not(.soon):hover{transform:translateY(-3px);box-shadow:0 1px 0 #fff inset,0 -1px 0 rgba(0,0,0,.08) inset,0 28px 46px -16px color-mix(in srgb,var(--c,#E8532B) 78%,#000)}
+/* type */
+h1,h2{text-wrap:balance;letter-spacing:-.018em}
+p,li,.s{text-wrap:pretty}
+::selection{background:color-mix(in srgb,var(--c,#E8532B) 62%,#fff);color:#10101a}
+html{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.34) transparent}
+/* pictures sit in the page, not on it */
+.dev img,.phone img,.wrap img{filter:drop-shadow(0 30px 40px rgba(10,10,50,.38))}
+@media(prefers-reduced-motion:reduce){.gbtn,.store,.sbtn{transition:none}.gbtn:hover,.store:hover,.sbtn:not(.soon):hover{transform:none}}
+
+/* the dock: every app, one glance, one tap */
+.dock{display:flex;gap:14px;align-items:flex-end;width:max-content;max-width:100%;margin:34px 0 0;padding:14px 18px 12px;border-radius:30px;
+  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.06)),rgba(18,20,50,.44);
+  -webkit-backdrop-filter:blur(24px) saturate(1.7);backdrop-filter:blur(24px) saturate(1.7);border:1px solid rgba(255,255,255,.3);
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 40px 70px -34px rgba(0,0,0,.75);scrollbar-width:none}
+.dock::-webkit-scrollbar{display:none}
+.dock a{position:relative;flex:none;display:block;width:56px;height:56px;border-radius:14px;transition:transform .4s cubic-bezier(.2,.9,.25,1.2);-webkit-tap-highlight-color:transparent}
+.dock a img{width:56px;height:56px;border-radius:14px;display:block;filter:drop-shadow(0 10px 14px rgba(0,0,0,.45))}
+.dock a:hover,.dock a:focus-visible{transform:translateY(-10px) scale(1.22);z-index:2}
+.dock a::after{content:attr(data-n);position:absolute;left:50%;bottom:calc(100% + 12px);translate:-50% 6px;opacity:0;pointer-events:none;white-space:nowrap;padding:6px 11px;border-radius:10px;font-size:13px;font-weight:500;color:#fff;background:rgba(14,16,40,.86);border:1px solid rgba(255,255,255,.22);transition:opacity .2s,translate .25s}
+.dock a:hover::after,.dock a:focus-visible::after{opacity:1;translate:-50% 0}
+@media(max-width:620px){.dock{overflow-x:auto;width:100%;gap:12px;padding:12px 14px;border-radius:24px;scroll-snap-type:x proximity}.dock a{scroll-snap-align:start}.dock a::after{display:none}}
+@media(prefers-reduced-motion:reduce){.dock a{transition:none}.dock a:hover,.dock a:focus-visible{transform:none;outline:3px solid #fff}}
+
 /* ── sections shared by the app pages ─────────────────────────────── */
 html[lang=ja] h1,html[lang=ja] h2,html[lang=ja] h3,html[lang=zh] h1,html[lang=zh] h2,html[lang=zh] h3{letter-spacing:0!important;line-height:1.18!important}
 html[lang=ja] body,html[lang=zh] body{line-height:1.7}

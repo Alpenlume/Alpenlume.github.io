@@ -186,3 +186,9 @@ ring.addEventListener('keydown',e=>{const d={ArrowLeft:[-1,0],ArrowRight:[1,0],A
 $$('.ms-ch').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});
  if(b.dataset.iso)st.iso=+b.dataset.iso;if(b.dataset.f)st.f=+b.dataset.f;show()}));
 show()})();
+
+/* the light that follows the pointer on glass (not for touch, not with reduced motion) */
+(()=>{if(matchMedia('(prefers-reduced-motion:reduce)').matches||!matchMedia('(hover:hover)').matches)return;
+const sel='.card,.glass,.gbtn,.sbtn,.store';let raf=0,px=0,py=0;
+addEventListener('pointermove',e=>{px=e.clientX;py=e.clientY;if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const t=document.elementFromPoint(px,py);const el=t&&t.closest&&t.closest(sel);if(!el)return;const r=el.getBoundingClientRect();el.style.setProperty('--mx',((px-r.left)/r.width*100).toFixed(1)+'%');el.style.setProperty('--my',((py-r.top)/r.height*100).toFixed(1)+'%')})},{passive:true});
+})();
