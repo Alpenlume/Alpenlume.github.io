@@ -192,3 +192,10 @@ show()})();
 const sel='.card,.glass,.gbtn,.sbtn,.store';let raf=0,px=0,py=0;
 addEventListener('pointermove',e=>{px=e.clientX;py=e.clientY;if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const t=document.elementFromPoint(px,py);const el=t&&t.closest&&t.closest(sel);if(!el)return;const r=el.getBoundingClientRect();el.style.setProperty('--mx',((px-r.left)/r.width*100).toFixed(1)+'%');el.style.setProperty('--my',((py-r.top)/r.height*100).toFixed(1)+'%')})},{passive:true});
 })();
+
+/* parallax of the phones: they move at a different speed than the page (not on small screens, not with reduced motion) */
+(()=>{if(matchMedia('(prefers-reduced-motion:reduce)').matches||!matchMedia('(min-width:900px)').matches)return;
+const els=[...document.querySelectorAll('.ph .wrap,.hero.app .r .big,.dev:not(.ph .dev)')].filter((e,i,a)=>a.indexOf(e)===i);if(!els.length)return;els.forEach(e=>e.classList.add('px'));
+let raf=0;const run=()=>{raf=0;const h=innerHeight;els.forEach(e=>{const r=e.getBoundingClientRect();if(r.bottom<-200||r.top>h+200)return;const d=(r.top+r.height/2-h/2)/h;e.style.setProperty('--py',(Math.max(-1,Math.min(1,d))*-46).toFixed(1)+'px')})};
+addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(run)},{passive:true});addEventListener('resize',run);run();
+})();

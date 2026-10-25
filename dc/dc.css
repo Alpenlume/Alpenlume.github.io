@@ -117,8 +117,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ff
 .row a.pr{display:inline-flex;align-items:center;min-height:44px;padding:0 6px;margin:0 -6px}
 .tag b,.tag span{font-size:13px!important}
 
-/* The bar stays legible over whatever scrolls under it; on touch screens search says "Search" with a magnifier, not a keyboard shortcut */
-nav:has(.logo){-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:linear-gradient(180deg,rgba(14,16,40,.58),rgba(14,16,40,.28) 70%,rgba(14,16,40,0))}
+/* On touch screens search says "Search" with a magnifier, not a keyboard shortcut */
 @media(max-width:620px),(hover:none){
 .kbd kbd{display:none}
 .kbd span{display:inline}
@@ -159,19 +158,38 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.34) transparent}
 .dev img,.phone img,.wrap img{filter:drop-shadow(0 30px 40px rgba(10,10,50,.38))}
 @media(prefers-reduced-motion:reduce){.gbtn,.store,.sbtn{transition:none}.gbtn:hover,.store:hover,.sbtn:not(.soon):hover{transform:none}}
 
-/* the dock: every app, one glance, one tap */
-.dock{display:flex;gap:14px;align-items:flex-end;width:max-content;max-width:100%;margin:34px 0 0;padding:14px 18px 12px;border-radius:30px;
-  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.06)),rgba(18,20,50,.44);
-  -webkit-backdrop-filter:blur(24px) saturate(1.7);backdrop-filter:blur(24px) saturate(1.7);border:1px solid rgba(255,255,255,.3);
-  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 40px 70px -34px rgba(0,0,0,.75);scrollbar-width:none}
-.dock::-webkit-scrollbar{display:none}
-.dock a{position:relative;flex:none;display:block;width:56px;height:56px;border-radius:14px;transition:transform .4s cubic-bezier(.2,.9,.25,1.2);-webkit-tap-highlight-color:transparent}
-.dock a img{width:56px;height:56px;border-radius:14px;display:block;filter:drop-shadow(0 10px 14px rgba(0,0,0,.45))}
-.dock a:hover,.dock a:focus-visible{transform:translateY(-10px) scale(1.22);z-index:2}
-.dock a::after{content:attr(data-n);position:absolute;left:50%;bottom:calc(100% + 12px);translate:-50% 6px;opacity:0;pointer-events:none;white-space:nowrap;padding:6px 11px;border-radius:10px;font-size:13px;font-weight:500;color:#fff;background:rgba(14,16,40,.86);border:1px solid rgba(255,255,255,.22);transition:opacity .2s,translate .25s}
-.dock a:hover::after,.dock a:focus-visible::after{opacity:1;translate:-50% 0}
-@media(max-width:620px){.dock{overflow-x:auto;width:100%;gap:12px;padding:12px 14px;border-radius:24px;scroll-snap-type:x proximity}.dock a{scroll-snap-align:start}.dock a::after{display:none}}
-@media(prefers-reduced-motion:reduce){.dock a{transition:none}.dock a:hover,.dock a:focus-visible{transform:none;outline:3px solid #fff}}
+/* The official badge: Apple's artwork, unaltered, with room around it */
+.badge{display:inline-block;margin:6px 4px;line-height:0;border-radius:11px;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.badge img{display:block;height:52px;width:auto}
+.badge:hover{transform:translateY(-3px)}
+.badge:active{transform:scale(.98)}
+.badge:focus-visible{outline:3px solid #fff;outline-offset:4px}
+
+/* Bento: the "everything else" cards as tiles of different sizes */
+.g3.bento{grid-template-columns:repeat(4,1fr);grid-auto-flow:dense;gap:16px}
+.g3.bento .mc{grid-column:span var(--cs,1);grid-row:span var(--rs,1);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.g3.bento .mc::before{content:"";position:absolute;right:-18%;top:-30%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 22%,transparent),transparent);pointer-events:none}
+.g3.bento .mc>*{position:relative}
+.g3.bento .mc.big{padding:34px;justify-content:flex-end;min-height:340px;background-image:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--c) 24%,transparent),transparent 62%),linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,0) 42%)}
+.g3.bento .mc.big .mk{font-size:clamp(46px,5vw,76px);letter-spacing:0;line-height:1;margin-bottom:auto;opacity:.9}
+.g3.bento .mc.big h3{font-size:clamp(24px,2.4vw,34px);line-height:1.1;margin-bottom:10px}
+.g3.bento .mc.big p{font-size:17px}
+@media(max-width:1000px){.g3.bento{grid-template-columns:repeat(2,1fr)}.g3.bento .mc{grid-column:span min(var(--cs,1),2)}.g3.bento .mc.big{min-height:280px}}
+@media(max-width:620px){.g3.bento{grid-template-columns:1fr}.g3.bento .mc{grid-column:auto;grid-row:auto}.g3.bento .mc.big{min-height:0}}
+
+/* parallax: the phones travel a little slower than the page */
+.px{translate:0 var(--py,0px);will-change:translate}
+
+/* the mark of Alpenlume: large, bright, always readable in the top left corner */
+nav .logo{font-size:27px;gap:13px;color:#fff!important;letter-spacing:-.01em;text-shadow:0 2px 20px rgba(10,6,40,.6);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+nav .logo img{width:46px;height:46px;border-radius:13px;box-shadow:0 0 0 1px rgba(255,255,255,.42),0 10px 26px -8px rgba(0,0,0,.6),0 0 30px -4px rgba(255,200,120,.35)}
+nav .logo:hover{transform:translateY(-2px)}
+@media(max-width:620px){nav .logo{font-size:23px;gap:10px}nav .logo img{width:40px;height:40px;border-radius:11px}}
+.hero .badge{margin:0 0 0 10px;vertical-align:middle}.fin .badge{margin:0 12px 12px 0}
+.rt .lang>button{white-space:nowrap}
+@media(max-width:400px){nav .logo{font-size:21px;gap:8px}nav .logo img{width:36px;height:36px;border-radius:10px}nav .in{padding:14px 16px;gap:8px}.kbd{padding:8px 10px}}
+/* the dark veil behind the top bar was painted over the logo and made it grey: the bar's content now sits above it */
+nav .in{position:relative;z-index:1}
 
 /* ── sections shared by the app pages ─────────────────────────────── */
 html[lang=ja] h1,html[lang=ja] h2,html[lang=ja] h3,html[lang=zh] h1,html[lang=zh] h2,html[lang=zh] h3{letter-spacing:0!important;line-height:1.18!important}
