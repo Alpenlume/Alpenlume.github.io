@@ -1,19 +1,13 @@
 # Alpenlume
 
-> Small iPhone and iPad apps that each do one thing, with no account, no ads, no tracking and no server: everything stays on the device.
+> Small iPhone, iPad and Mac apps that each do one thing, with no account, no ads, no tracking and no server: everything stays on the device.
 
-## Apps
+## Apps on sale
 
 - [Talkquote](https://alpenlume.github.io/talkquote.html): Quotations by voice
 - [Voucherlume](https://alpenlume.github.io/voucherlume.html): Every card, one wallet
-- [Sublume](https://alpenlume.github.io/sublume.html): What it all costs
-- [Photolume Studio](https://alpenlume.github.io/filmlume.html): Film negative converter and photo editor for iPhone and iPad
-- [Meterlume](https://alpenlume.github.io/meterlume.html): Film light meter · 35 mm and 120
-- [Weddinglume](https://alpenlume.github.io/weddinglume.html): A wedding, wherever it is held
-- [Pagewright](https://alpenlume.github.io/pagewright.html): Docs, PDF, scan
-- [Fornela](https://alpenlume.github.io/fornela.html): Kitchen and shopping
-- [Sharpfield](https://alpenlume.github.io/sharpfield-full-frame.html): Full frame optics
-- [Melopocket](https://alpenlume.github.io/melopocket.html): Music and podcasts
+- [Photolume Studio](https://alpenlume.github.io/filmlume.html): Pro photo editor for iPhone and iPad
+- [Photolume Mac Studio](https://alpenlume.github.io/filmlume-studio.html): the Mac app of the same purchase
 
 Support: alpenlume@gmail.com
 Prices are shown in the App Store, in the buyer's currency.

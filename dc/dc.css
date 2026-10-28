@@ -355,3 +355,7 @@ body.t-dusk :is(.card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd
 .dv.tone-blue{--e1:#6F83B3;--e2:#37497A;--e3:#1A2547;--bt:#44578a}
 .dv.tone-orange{--e1:#F4A675;--e2:#D9672B;--e3:#8F3A12;--bt:#c4561f}
 .dv.flat .sh{display:none}
+
+/* Tour link on every app card: a visible pill instead of a thin underlined word (28.10.2026) */
+.card .row a.pr{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;margin:0;border:1.5px solid var(--c);border-radius:999px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--tx);font-size:15px;font-weight:700;letter-spacing:.01em;text-decoration:none!important}
+.card .row a.pr:hover,.card .row a.pr:focus-visible{background:var(--c);color:#fff;outline:2px solid var(--c);outline-offset:3px}
