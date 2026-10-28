@@ -1,0 +1,141 @@
+/* Alpenlume: ultra motion layer. Pure addition: no colour, text, size or position of the page is changed.
+   Remove the <link> to this file and the <script> motion.js to switch all of it off. */
+
+/* ─────── TUNE HERE (JS reads these too) ─────── */
+:root{
+  --mo-speed:1;      /* entrance length: .6 faster … 1.6 slower */
+  --mo-scroll:7;     /* inertial scrolling stiffness: 4 floaty … 14 snappy, 0 = native scrolling */
+  --mo-skew:1;       /* heading skew/stretch with scroll speed, 0 = off */
+  --mo-depth:1;      /* parallax distance, 0 = none, 1.6 = dramatic */
+  --mo-tilt:1;       /* 3D tilt of cards under the pointer, 0 = off */
+  --mo-magnet:1;     /* magnetic pull of buttons, 0 = off */
+  --mo-grain:.05;    /* film grain opacity behind the page, 0 = off */
+  --mo-ease:cubic-bezier(.16,1,.3,1);
+  --mo-spring:cubic-bezier(.34,1.56,.64,1);
+}
+@supports (transition-timing-function:linear(0,1)){:root{--mo-spring:linear(0,.28 7%,.78 15%,1.1 24%,1.13 29%,1.05 40%,.985 52%,1.004 68%,1)}}
+
+@media (prefers-reduced-motion:no-preference){
+@keyframes mo-up{from{opacity:0;transform:translate3d(0,26px,0)}}
+@keyframes mo-down{from{opacity:0;transform:translate3d(0,-18px,0)}}
+@keyframes mo-pop{from{opacity:0;transform:scale(.55) translate3d(0,14px,0)}}
+@keyframes mo-fade{from{opacity:0}}
+@keyframes mo-guard{0%,92%{opacity:0}100%{opacity:1}}
+@keyframes mo-veil{to{opacity:0;visibility:hidden}}
+@keyframes mo-cam{from{scale:1.16}}
+@keyframes mo-breathe{from{scale:1}to{scale:1.012}}
+@keyframes mo-wipe{from{clip-path:inset(0 0 100% 0)}}
+@keyframes mo-wipe-x{from{clip-path:inset(0 100% 0 0)}}
+@keyframes mo-line{from{transform:scaleY(0)}}
+@keyframes mo-l{from{transform:translate3d(0,140%,0) rotate(7deg);opacity:0}}
+@keyframes mo-ring{0%{opacity:.9;transform:scale(.2)}100%{opacity:0;transform:scale(5)}}
+@keyframes mo-card{from{opacity:0;transform:perspective(1500px) translate3d(calc(var(--s,1)*90px),70px,-150px) rotateY(calc(var(--s,1)*-15deg)) rotateX(8deg)}}
+@keyframes mo-phone{from{opacity:0;transform:perspective(1400px) translate3d(calc(var(--s,1)*-80px),100px,-220px) rotateY(calc(var(--s,1)*26deg)) rotateX(10deg) scale(.9)}}
+@keyframes mo-rv{from{opacity:0;transform:perspective(1200px) translate3d(0,56px,-70px) rotateX(7deg)}}
+@keyframes mo-icon{from{opacity:0;transform:scale(.15) rotate(-22deg)}}
+@keyframes mo-glow{from{opacity:0;transform:scale(.3)}}
+@keyframes mo-drift{from{transform:translate3d(-7vw,0,0)}to{transform:translate3d(7vw,-1.5vh,0)}}
+@keyframes mo-grain{0%{transform:translate3d(0,0,0)}20%{transform:translate3d(-3%,2%,0)}40%{transform:translate3d(2%,-3%,0)}60%{transform:translate3d(-2%,-1%,0)}80%{transform:translate3d(3%,3%,0)}100%{transform:translate3d(0,0,0)}}
+@keyframes mo-bob{from{translate:0 -3px}to{translate:0 5px}}
+@keyframes mo-pulse{from{opacity:.85}to{opacity:1}}
+
+/* ─────── 7. the arrival: the hero assembles in about 1.2 s (works without JS; no layout shift) ─────── */
+body::before{content:"";position:fixed;inset:0;z-index:-3;background:#070a1c;pointer-events:none;animation:mo-veil 1.5s ease-out .1s forwards}
+#world{transform-origin:50% 60%;animation:mo-cam 2.6s var(--mo-ease) backwards,mo-breathe 18s ease-in-out 2.6s infinite alternate}
+#sky,#season{transform-origin:50% 60%}
+#sun canvas{animation:mo-pulse 7s ease-in-out infinite alternate}
+nav .logo{animation:mo-down .9s var(--mo-ease) .05s backwards}
+nav .hud{animation:mo-down .9s var(--mo-ease) .16s backwards}
+nav .rt>*{animation:mo-down .9s var(--mo-ease) .28s backwards}
+nav .rt>*+*{animation-delay:.36s}
+.ruler:before{transform-origin:50% 100%;animation:mo-line 1.4s var(--mo-ease) .3s backwards}
+.ruler i,.ruler span{animation:mo-fade 1s ease .7s backwards}
+.hero h1{animation:mo-guard 1.6s steps(1,end) both}
+html.mo-go .hero h1{animation:none}
+.hero .sub,.hero.app .lede{animation:mo-up 1s var(--mo-ease) .8s backwards}
+.hero .go{animation:mo-pop .9s var(--mo-spring) 1s backwards}
+.hero .trust span{animation:mo-up .8s var(--mo-ease) 1.1s backwards}
+.hero .trust span+span{animation-delay:1.2s}.hero .trust span+span+span{animation-delay:1.3s}
+.hero.app .appid{animation:mo-up .9s var(--mo-ease) .2s backwards}
+.hero.app .chips span{animation:mo-pop .8s var(--mo-spring) .85s backwards}
+.hero.app .chips span:nth-child(2){animation-delay:.92s}.hero.app .chips span:nth-child(3){animation-delay:.99s}.hero.app .chips span:nth-child(4){animation-delay:1.06s}.hero.app .chips span:nth-child(n+5){animation-delay:1.13s}
+.hero.app .cta>*{animation:mo-pop 1s var(--mo-spring) 1s backwards}
+.hero.app .cta>*+*{animation-delay:1.12s}.hero.app .cta>*+*+*{animation-delay:1.22s}
+.hero.app .r{animation:mo-phone 1.6s var(--mo-ease) .35s backwards}
+
+/* ─────── 2. kinetic typography (JS splits the big headings) ─────── */
+.mo-w{display:inline-block;white-space:nowrap;vertical-align:baseline;clip-path:inset(-.3em -100px -.3em -100px)}
+.mo-l{display:inline-block}
+html.mo .mo-pre{opacity:0}
+.mo-h .mo-l{transform:translate3d(0,140%,0) rotate(7deg);opacity:0}
+.mo-vis .mo-l{transform:none;opacity:1;animation:mo-l calc(.85s*var(--mo-speed)) var(--mo-ease) calc(var(--d,0)*1ms + var(--b,0ms)) backwards}
+html.mo-lite .mo-vis .mo-l{animation-duration:.8s}
+
+/* ─────── 4. camps: choreographed entrance (starts when the page's own observer marks the camp .in) ─────── */
+html.mo .camp:nth-of-type(even){--s:-1}
+html.mo .ph .wrap{opacity:0;transform:none;transition:none}
+html.mo .camp.in .ph .wrap{opacity:1;animation:mo-phone calc(1.5s*var(--mo-speed)) var(--mo-ease) .05s backwards}
+html.mo .camp .card{opacity:0;transform:none;transition:background-color .6s,color .6s,border-color .6s}
+html.mo .camp.in .card{opacity:1;animation:mo-card calc(1.3s*var(--mo-speed)) var(--mo-ease) .18s backwards}
+html.mo .camp.in .card>*{animation:mo-up calc(.9s*var(--mo-speed)) var(--mo-ease) calc(.45s + var(--ci,0)*.09s) backwards}
+html.mo .camp .card>:nth-child(2){--ci:1}html.mo .camp .card>:nth-child(3){--ci:2}html.mo .camp .card>:nth-child(4){--ci:3}html.mo .camp .card>:nth-child(5){--ci:4}html.mo .camp .card>:nth-child(6){--ci:5}
+html.mo .camp.in .card .ap img{animation:mo-icon 1.2s var(--mo-spring) .6s backwards}
+html.mo .camp.in .card li{animation:mo-up .8s var(--mo-ease) backwards}
+html.mo .camp .card li:nth-child(1){animation-delay:.85s}html.mo .camp .card li:nth-child(2){animation-delay:.93s}html.mo .camp .card li:nth-child(3){animation-delay:1.01s}
+html.mo .camp.in .card .row>*{animation:mo-pop 1s var(--mo-spring) 1.15s backwards}
+html.mo .camp .card .row>*+*{animation-delay:1.25s}html.mo .camp .card .row>*+*+*{animation-delay:1.35s}
+html.mo .camp.in .dv .sc{animation:mo-wipe 1.2s var(--mo-ease) .3s backwards}
+html.mo .camp.in .macwin img{animation:mo-wipe 1.2s var(--mo-ease) .3s backwards}
+html.mo .camp.in .glowp{animation:mo-glow 2s ease-out .3s backwards}
+html.mo .camp .dv .sc img.s{transform:translate3d(0,var(--sy,0%),0) scale(1.035)}
+html.mo .flag:before{content:"";position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;border:2px solid #fff;opacity:0;box-shadow:0 0 22px rgba(255,255,255,.6)}
+html.mo .camp.in .flag:before{animation:mo-ring 1.8s ease-out .15s both}
+/* every other reveal on the pages */
+html.mo .rv{opacity:0;transform:none;transition:none}
+html.mo .rv.in{opacity:1;animation:mo-rv calc(1.1s*var(--mo-speed)) var(--mo-ease) calc(var(--rvi,0)*.09s) backwards}
+html.mo .const svg{clip-path:inset(0 100% 0 0)}html.mo .const.in svg{clip-path:inset(0);animation:mo-wipe-x 1.8s var(--mo-ease) .2s backwards}
+html.mo .const.in .star{animation:mo-pop 1.1s var(--mo-spring) calc(.35s + var(--rvi,0)*.16s) backwards}
+html.mo .star img{animation:tw 4s ease-in-out infinite,mo-bob 6.5s ease-in-out infinite alternate}
+html.mo .why>.rv:nth-child(2){--rvi:1}html.mo .why>.rv:nth-child(3){--rvi:2}html.mo .why>.rv:nth-child(4){--rvi:3}
+html.mo .stats>div:nth-child(2){--rvi:1}html.mo .stats>div:nth-child(3){--rvi:2}
+html.mo .in .cv,html.mo .in .duo img,html.mo .in .sfimg .macwin{animation:mo-wipe-x 1.5s var(--mo-ease) .3s backwards}
+html.mo .in .duo .d-o img{animation-delay:.5s}
+/* the progress path and the altitude ruler light up */
+.mo-glow{fill:none;stroke-linecap:round;pointer-events:none}
+.mo-glow.a{stroke:rgba(255,214,160,.28);stroke-width:12}.mo-glow.b{stroke:#fff;stroke-width:3}
+.ruler .mo-fill{position:absolute;left:-1px;bottom:0;width:3px;height:100%;border-radius:2px;background:linear-gradient(0deg,#fff,rgba(255,255,255,.15));box-shadow:0 0 12px rgba(255,255,255,.6);transform-origin:50% 100%;transform:scaleY(0)}
+
+/* ─────── 5. micro-interactions ─────── */
+html.mo .card,html.mo .mc,html.mo .step,html.mo .why>div,html.mo .sup>.glass,html.mo .ex{position:relative;isolation:isolate}
+html.mo .card:after,html.mo .mc:after,html.mo .step:after,html.mo .why>div:after,html.mo .sup>.glass:after,html.mo .ex:after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(380px circle at var(--sx,50%) var(--sy,0%),rgba(255,255,255,.4),color-mix(in srgb,var(--c,#E8532B) 16%,transparent) 42%,transparent 70%)}
+html.mo .card.tl:after,html.mo .mc.tl:after,html.mo .step.tl:after,html.mo .why>div.tl:after,html.mo .sup>.glass.tl:after,html.mo .ex.tl:after{opacity:1}
+html.mo .card .row a.pr{background-image:linear-gradient(var(--c),var(--c));background-repeat:no-repeat;background-size:0 100%;transition:background-size .55s var(--mo-ease),color .3s .12s}
+html.mo .card .row a.pr:hover,html.mo .card .row a.pr:focus-visible{background-size:100% 100%;background-color:color-mix(in srgb,var(--c) 14%,transparent)}
+html.mo .sup a,html.mo .q .a a,html.mo .fold .in a{background:linear-gradient(currentColor,currentColor) no-repeat 0 100%/0 2px;transition:background-size .5s var(--mo-ease)}
+html.mo .sup a:hover,html.mo .q .a a:hover,html.mo .fold .in a:hover{background-size:100% 2px}
+html.mo .pf a{position:relative}html.mo .pf a:after{content:"";position:absolute;left:6px;right:6px;bottom:11px;height:2px;background:linear-gradient(90deg,#FFD9A0,#9ad0ff);transform:scaleX(0);transform-origin:0 50%;transition:transform .5s var(--mo-ease)}
+html.mo .pf a:hover:after{transform:scaleX(1)}
+html.mo .hero .go,html.mo .oa a,html.mo .langs a{transition:transform .35s var(--mo-ease),background-color .25s}
+/* language menu and search palette open smoothly */
+html.mo .lang ul{display:block;visibility:hidden;opacity:0;transform:translateY(-10px) scale(.94);transform-origin:100% 0;clip-path:inset(0 0 100% 0 round 14px);transition:opacity .25s,transform .5s var(--mo-ease),clip-path .55s var(--mo-ease),visibility 0s .55s}
+html.mo .lang.on ul{visibility:visible;opacity:1;transform:none;clip-path:inset(0 0 0 0 round 14px);transition-delay:0s}
+html.mo .lang li{opacity:0;transform:translateX(12px);transition:opacity .3s,transform .5s var(--mo-ease)}
+html.mo .lang.on li{opacity:1;transform:none;transition-delay:calc(var(--i,0)*30ms + 70ms)}
+.lang li:nth-child(2){--i:1}.lang li:nth-child(3){--i:2}.lang li:nth-child(4){--i:3}.lang li:nth-child(5){--i:4}.lang li:nth-child(6){--i:5}.lang li:nth-child(7){--i:6}.lang li:nth-child(8){--i:7}.lang li:nth-child(9){--i:8}.lang li:nth-child(10){--i:9}
+html.mo .pal.on{animation:mo-fade .35s ease both}
+html.mo .pal.on .bx{animation:mo-pal .6s var(--mo-ease) both}
+@keyframes mo-pal{from{opacity:0;transform:translateY(-28px) scale(.93);clip-path:inset(0 0 100% 0 round 18px)}}
+html.mo .pal.on:not(.typed) li{animation:mo-up .55s var(--mo-ease) calc(var(--i,0)*40ms + .15s) backwards}
+.pal li:nth-child(2){--i:1}.pal li:nth-child(3){--i:2}.pal li:nth-child(4){--i:3}.pal li:nth-child(5){--i:4}.pal li:nth-child(6){--i:5}.pal li:nth-child(7){--i:6}.pal li:nth-child(8){--i:7}
+
+/* ─────── 6. ambient: drifting haze, film grain, hiker pulse (desktop only) ─────── */
+.mo-haze{position:fixed;left:-12vw;right:-12vw;bottom:-8vh;height:46vh;z-index:-3;pointer-events:none;background:radial-gradient(60% 55% at 30% 70%,rgba(255,255,255,.17),transparent 70%),radial-gradient(50% 50% at 75% 60%,rgba(255,235,215,.13),transparent 70%);animation:mo-drift 38s ease-in-out infinite alternate}
+.mo-haze.b{bottom:12vh;height:34vh;opacity:.75;animation-duration:55s;animation-direction:alternate-reverse}
+body.t-night .mo-haze{background:radial-gradient(60% 55% at 30% 70%,rgba(140,160,255,.15),transparent 70%),radial-gradient(50% 50% at 75% 60%,rgba(190,140,255,.11),transparent 70%)}
+.mo-grain{position:fixed;inset:-12%;z-index:-3;pointer-events:none;opacity:var(--mo-grain);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");animation:mo-grain .9s steps(1,end) infinite}
+html.mo-lite .mo-haze,html.mo-lite .mo-grain{display:none}
+html.mo-lite .camp.in .card{animation-name:mo-up}html.mo-lite .camp.in .ph .wrap{animation-name:mo-up}html.mo-lite .rv.in{animation-name:mo-up}
+html.mo-lite #world{animation:mo-cam 2.2s var(--mo-ease) backwards}
+}
+/* anything that still reaches a reduced-motion visitor stays still */
+@media (prefers-reduced-motion:reduce){.mo-haze,.mo-grain{display:none}}
