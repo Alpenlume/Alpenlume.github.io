@@ -3,8 +3,8 @@
 
 /* ─────── TUNE HERE (JS reads these too) ─────── */
 :root{
-  --mo-speed:1;      /* entrance length: .6 faster … 1.6 slower */
-  --mo-scroll:7;     /* inertial scrolling stiffness: 4 floaty … 14 snappy, 0 = native scrolling */
+  --mo-speed:.6;      /* entrance length: .6 faster … 1.6 slower */
+  --mo-scroll:14;     /* inertial scrolling stiffness: 4 floaty … 14 snappy, 0 = native scrolling */
   --mo-skew:1;       /* heading skew/stretch with scroll speed, 0 = off */
   --mo-depth:1;      /* parallax distance, 0 = none, 1.6 = dramatic */
   --mo-tilt:1;       /* 3D tilt of cards under the pointer, 0 = off */
@@ -40,8 +40,8 @@
 @keyframes mo-pulse{from{opacity:.85}to{opacity:1}}
 
 /* ─────── 7. the arrival: the hero assembles in about 1.2 s (works without JS; no layout shift) ─────── */
-body::before{content:"";position:fixed;inset:0;z-index:-3;background:#070a1c;pointer-events:none;animation:mo-veil 1.5s ease-out .1s forwards}
-#world{transform-origin:50% 60%;animation:mo-cam 2.6s var(--mo-ease) backwards,mo-breathe 18s ease-in-out 2.6s infinite alternate}
+body::before{content:"";position:fixed;inset:0;z-index:-3;background:#070a1c;pointer-events:none;animation:mo-veil .8s ease-out .05s forwards}
+#world{transform-origin:50% 60%;animation:mo-cam 1.5s var(--mo-ease) backwards,mo-breathe 18s ease-in-out 1.5s infinite alternate}
 #sky,#season{transform-origin:50% 60%}
 #sun canvas{animation:mo-pulse 7s ease-in-out infinite alternate}
 nav .logo{animation:mo-down .9s var(--mo-ease) .05s backwards}
