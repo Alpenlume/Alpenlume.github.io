@@ -204,3 +204,5 @@ const els=[...document.querySelectorAll('.ph .wrap,.hero.app .r .big,.dev:not(.p
 let raf=0;const run=()=>{raf=0;const h=innerHeight;els.forEach(e=>{const r=e.getBoundingClientRect();if(r.bottom<-200||r.top>h+200)return;const d=(r.top+r.height/2-h/2)/h;e.style.setProperty('--py',(Math.max(-1,Math.min(1,d))*-46).toFixed(1)+'px')})};
 addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(run)},{passive:true});addEventListener('resize',run);run();
 })();
+/* 15.11.2026: the top bar turns to glass once the page has moved */
+(function(){const r=document.documentElement,f=()=>r.classList.toggle('scrolled',scrollY>30);addEventListener('scroll',f,{passive:true});f()})();

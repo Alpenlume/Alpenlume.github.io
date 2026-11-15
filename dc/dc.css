@@ -407,3 +407,13 @@ body.t-dusk :is(.card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd
    so it sits exactly on the island the recordings carry and in the right place on the still screens (no double, no overlap) */
 .dv .isl{top:5.38cqw;width:20.5cqw;height:7.94cqw;margin-left:-10.25cqw}
 .dv .isl:after{right:1.9cqw;width:3.4cqw;height:3.4cqw;margin-top:-1.7cqw}
+/* 15.11.2026: the pause button sits under the phone or the window, never on the app's own screen */
+.vtoggle{width:38px;height:38px;font-size:12px;line-height:36px}
+.dv>.vtoggle,.ph .wrap>.vtoggle,.hero.app .r>.vtoggle{left:50%;right:auto;top:auto;bottom:-56px;transform:translateX(-50%)}
+.ph .wrap:has(>.vtoggle),.ph .wrap:has(.dv>.vtoggle){margin-bottom:58px}
+.hero.app .big:has(.vtoggle){margin-bottom:62px}
+.hero.app .r:has(>.vtoggle){padding-bottom:62px}
+.hero.app .r>.vtoggle{bottom:6px}
+/* 15.11.2026: once the page moves, the bar at the top gets frosted glass, so nothing passing under it runs into the logo or the buttons */
+nav:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,18,46,.66),rgba(14,18,46,.44));-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 10px 30px -18px rgba(0,0,0,.6);opacity:0;transition:opacity .3s ease;pointer-events:none}
+html.scrolled nav:after{opacity:1}
