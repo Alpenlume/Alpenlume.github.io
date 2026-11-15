@@ -145,3 +145,5 @@ body::before{animation-duration:.35s}
 .hero.app .appid,.hero.app .lede,.hero.app .chips span,.hero.app .cta>*{animation-duration:.55s!important;animation-delay:.08s!important}
 .hero.app .r{animation-duration:.8s!important;animation-delay:.05s!important}
 }
+/* 15.11.2026: the climb starts in the morning light, so the arrival fades from the sky's own blue */
+@media (prefers-reduced-motion:no-preference){body::before{background:#5B8DE8}}

@@ -7,8 +7,8 @@ const lerp=(a,b,t)=>a+(b-a)*t;
 const rgba=(h,a)=>{const c=hx(h);return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')'};
 /* key moments of the day: p, top, bottom, m1..m4, mist, sun, n(stars), cn(cards), hour, temp, warm */
 const K=[
-[0,'#141B35','#8B5A52','#5B7092','#3D5073','#2E3F5C','#1C2740','#C9906E','#FFB74D',.3,0,5.5,3,.4],
-[.13,'#5B8DE8','#FFD3A8','#8FA4D6','#6C86B8','#4C6A93','#2E4A66','#FFE6CF','#FFE3A3',0,0,7.75,8,.3],
+[0,'#5B8DE8','#FFD3A8','#8FA4D6','#6C86B8','#4C6A93','#2E4A66','#FFE6CF','#FFE3A3',0,0,7.75,8,.3],
+[.13,'#4486EA','#C8E6FF','#86A5D7','#6487BA','#46709A','#2B4E70','#F0F7FF','#FFF0C4',0,0,9,12,.15],
 [.3,'#2F80ED','#BDE3FF','#7FA6D8','#5B87BB','#3F6F9A','#285078','#E8F4FF','#FFF6D6',0,0,10.5,16,0],
 [.46,'#1A74F0','#A5D8FF','#7BA3D6','#4F83BD','#2F6396','#1E4C77','#DDEEFF','#FFFFFF',0,0,13,22,0],
 [.62,'#4D7BD8','#FFCB85','#A798C9','#7D78AD','#55608F','#34486D','#FFE0B0','#FFD08A',0,0,16.75,15,.4],
@@ -25,11 +25,13 @@ const sunEl=$('#sun'),sunCv=sunEl.querySelector('canvas'),sunCx=sunCv.getContext
 const PA={back:new Path2D(WD.back),lit:new Path2D(WD.lit),shd:new Path2D(WD.shd),cap:new Path2D(WD.cap),rim:new Path2D(WD.rim),l3:new Path2D(WD.l3),l4:new Path2D(WD.l4),l5:new Path2D(WD.l5)};
 const CXD=+(document.body.dataset.cx||150);
 let VW=innerWidth,VH=innerHeight,K_=1,quality=1,SC=1,CX=CXD,MH=.78,mv=1,calmAt=0;
+let FAR=[];
+function mkFar(){FAR=[[.80,.21,1.7,.7,.48],[.87,.15,2.6,2.3,.6]].map(([b,a,f,ph,k])=>{const P=new Path2D();P.moveTo(-40,VH+10);for(let x=-40;x<=VW+40;x+=6){const u=x/Math.max(VW,1);const v=.55*(1-Math.abs(Math.sin(u*Math.PI*f+ph)))+.3*(1-Math.abs(Math.sin(u*Math.PI*f*2.3+ph*1.7)))+.15*Math.abs(Math.sin(u*Math.PI*f*7.1+ph*.4));P.lineTo(x,VH*b-VH*a*v)}P.lineTo(VW+40,VH+10);P.closePath();return{P,k}})}
 function geom(){VW=innerWidth;VH=innerHeight;const wide=VW>1000;MH=wide?.78:.5;const span=wide?2800:800;CX=wide?CXD:CXD+(CXD-CXD)+0;
  // the picture is centred on the peak (x=487 in the drawing) on a phone and on the drawing's middle on a desktop
  CX=wide?CXD:487;SC=Math.max(VW/span,MH*VH/850);
  setK();
- mkStars();dirty=true}
+ mkStars();mkFar();dirty=true}
 function setK(){const base=Math.min(devicePixelRatio||1,VW<800?1.25:1.35);K_=Math.max(.5,base*quality*mv);
  const area=VW*VH*K_*K_;if(area>3.2e6)K_*=Math.sqrt(3.2e6/area);
  cv.width=sky.width=Math.round(VW*K_);cv.height=sky.height=Math.round(VH*K_);sunKey='';dirty=true}
@@ -84,12 +86,15 @@ function drawWorld(t,p,s){const w=VW,h=VH;cx=SKYC;cx.setTransform(K_,0,0,K_,0,0)
  // mountains: the company icon drawn wide, recoloured by the hour
  const dk=Math.max(0,(s.n-.4)/.6)*.8,fc=c=>mix(mix(c,s.sun,s.warm*.5),'#16204A',dk);
  const lay=(dy,sc,ox=0,oy=0)=>{cx.setTransform(K_,0,0,K_,0,0);cx.translate(w/2+ox,h+dy+oy);cx.scale(sc,sc);cx.translate(-w/2,-h);cx.translate(w/2-CX*SC,h-1000*SC);cx.scale(SC,SC)};
+ // far ranges, paler with distance, moving least
+ for(const [i,F] of FAR.entries()){cx.setTransform(K_,0,0,K_,0,0);cx.translate(-po.x*(2+i*2),p*(.015+i*.012)*h-po.y*(1+i));const gF=cx.createLinearGradient(0,h*.45,0,h);gF.addColorStop(0,fc(mix(s.bot,s.m1,F.k)));gF.addColorStop(1,fc(mix(s.bot,s.m2,F.k+.2)));cx.globalAlpha=.55+i*.2;cx.fillStyle=gF;cx.fill(F.P)}cx.globalAlpha=1;
  lay(p*.04*h,1,-po.x*5,-po.y*3);g=cx.createLinearGradient(0,590,0,1000);g.addColorStop(0,fc('#6A7FA3'));g.addColorStop(1,fc('#3F5278'));cx.fillStyle=g;cx.fill(PA.back);
  lay(p*.09*h,1+p*.42,-po.x*12,-po.y*6);g=cx.createLinearGradient(0,215,0,943);g.addColorStop(0,fc('#B4C0D6'));g.addColorStop(1,fc('#8CA0BE'));cx.fillStyle=g;cx.fill(PA.shd);
  g=cx.createLinearGradient(0,215,0,943);g.addColorStop(0,fc('#F4F7FF'));g.addColorStop(1,fc('#BCCBE3'));cx.fillStyle=g;cx.fill(PA.lit);
  cx.fillStyle=fc('#FFFFFF');cx.fill(PA.cap);cx.strokeStyle='rgba(255,255,255,.28)';cx.lineWidth=3;cx.lineJoin='round';cx.stroke(PA.rim);
+ const vmist=(yf,al,k,ox)=>{cx.setTransform(K_,0,0,K_,0,0);const y=h*yf;for(let j=0;j<3;j++){const per=90000+j*23000+k*17000;const fx=((((RM?0:t)+j*per*.37+k*per*.5)%per)/per)*1.5-.25;cx.save();cx.translate(w*fx+ox,y);cx.scale(1,.22);const r=w*(.32+.08*j);const gm=cx.createRadialGradient(0,0,0,0,0,r);gm.addColorStop(0,rgba(s.mist,al*(1-s.n*.6)));gm.addColorStop(1,rgba(s.mist,0));cx.fillStyle=gm;cx.fillRect(-r,-r,r*2,r*2);cx.restore()}};
  const band=(path,hv,vb,dy,col,ox=0,oy=0)=>{const hp=hv*h;cx.setTransform(K_,0,0,K_,0,0);cx.translate(ox-40,h+dy-hp+oy);cx.scale((w+80)/1440,hp/vb);cx.fillStyle=col;cx.fill(path)};
- band(PA.l3,.30,600,p*.16*h,s.m3,-po.x*18,-po.y*8);band(PA.l4,.21,600,p*.26*h,s.m4,-po.x*26,-po.y*11);band(PA.l5,.15,620,p*.40*h,mix(s.m4,'#000000',.3),-po.x*36,-po.y*14);
+ band(PA.l3,.30,600,p*.16*h,s.m3,-po.x*18,-po.y*8);vmist(.70+p*.16,.16,0,-po.x*20);band(PA.l4,.21,600,p*.26*h,s.m4,-po.x*26,-po.y*11);vmist(.80+p*.26,.12,1,-po.x*28);band(PA.l5,.15,620,p*.40*h,mix(s.m4,'#000000',.3),-po.x*36,-po.y*14);
  // mist low in the valley, only while it is morning
  const fo=Math.max(0,.85-p*3);if(fo>.01){cx.setTransform(K_,0,0,K_,0,0);cx.globalAlpha=fo;for(const[fx,fw]of[[.3,.6],[.78,.5]]){cx.save();cx.translate(w*fx,h*(1+p*.3));cx.scale(1,.55);g=cx.createRadialGradient(0,0,0,0,0,w*fw);g.addColorStop(0,rgba(s.mist,.8));g.addColorStop(1,rgba(s.mist,0));cx.fillStyle=g;cx.fillRect(-w*fw,-w*fw,w*fw*2,w*fw*2);cx.restore()}cx.globalAlpha=1}
  // snow near the top
