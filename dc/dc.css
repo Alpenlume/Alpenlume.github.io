@@ -359,3 +359,41 @@ body.t-dusk :is(.card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd
 /* Tour link on every app card: a visible pill instead of a thin underlined word (28.10.2026) */
 .card .row a.pr{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;margin:0;border:1.5px solid var(--c);border-radius:999px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--tx);font-size:15px;font-weight:700;letter-spacing:.01em;text-decoration:none!important}
 .card .row a.pr:hover,.card .row a.pr:focus-visible{background:var(--c);color:#fff;outline:2px solid var(--c);outline-offset:3px}
+
+/* ───────── 15.11.2026: the app at work in the first phone (a short silent loop), with a pause button ───────── */
+.dv .sc video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;display:block;background:#000}
+.vtoggle{position:absolute;right:7%;bottom:3.5%;z-index:4;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(10,12,28,.55);color:#fff;font:600 14px/42px system-ui,sans-serif;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:.85;transition:opacity .2s}
+.vtoggle:hover,.vtoggle:focus-visible{opacity:1}
+.vtoggle:focus-visible{outline:3px solid #fff;outline-offset:2px}
+:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
+/* ───────── 15.11.2026: on a big screen the page uses its width (Mariusz: "wykorzystaj całą stronę, nie tylko środek") ───────── */
+@media (min-width:1440px){
+  nav .in,.trail,.summit,footer{max-width:min(94vw,2400px)}
+  .sec{max-width:min(92vw,2200px)}
+  .camp{gap:clamp(110px,9vw,260px)}
+  .card,.camp .card{max-width:min(660px,36vw)}
+  .card{padding:36px 40px}
+  .ph .wrap{width:clamp(330px,21vw,450px)}
+  .const{max-width:min(1700px,88vw)}
+  .why{gap:22px}
+  .hero.app{padding-right:max(24px,6vw);gap:4vw}
+  .hero.app .l{max-width:min(920px,48vw)}
+  .hero.app h1{font-size:clamp(34px,4.3vw,110px)}
+  .hero.app .lede{font-size:clamp(16px,1.2vw,22px)}
+  .hero.app .big{width:clamp(350px,23vw,480px)}
+  .moment{max-width:min(1500px,82vw)}
+  .hd{max-width:min(1100px,100%)}
+  .faq{max-width:min(1300px,100%)}
+  .offer{max-width:min(1200px,100%)}
+  .macgal{max-width:min(2000px,100%)}
+  .gal .strip{padding-left:max(16px,calc((100vw - min(92vw,2200px))/2 + 28px));padding-right:max(16px,calc((100vw - min(92vw,2200px))/2 + 28px))}
+  .gal .strip img{height:min(78vh,820px)}
+  footer.pf{padding-left:max(28px,calc((100vw - min(92vw,2200px))/2));padding-right:max(28px,calc((100vw - min(92vw,2200px))/2))}
+  .studio .hero.app .r .macwin{width:min(100%,1100px)}
+  .studio .wide img{width:min(70vw,1300px)}
+}
+@media (min-width:1900px){
+  .exg{grid-template-columns:repeat(4,1fr)}
+  .ph .wrap{width:clamp(380px,20vw,480px)}
+}
