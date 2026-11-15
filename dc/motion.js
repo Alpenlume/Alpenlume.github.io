@@ -122,7 +122,11 @@
   const camps = $$('.camp').map((el, i) => ({ el, i, ph: $('.ph .wrap', el), glow: $('.glowp', el), sc: $('.dv .sc', el), card: $('.card', el), icon: $('.ap img', el), side: i % 2 ? -1 : 1, v: false }));
   const vio = new IntersectionObserver(es => es.forEach(e => { e.target._v = e.isIntersecting; }), { rootMargin: '25% 0px' });
   camps.forEach(c => vio.observe(c.el));
-  const heroEls = $$('.hero>h1,.hero>.sub,.hero>.go,.hero>.trust,.hero.app .l>*,.hero.app .r').map((el, i) => ({ el, k: .14 + i * .05, h1: el.tagName === 'H1' }));
+  const heroEls = $$('.hero>h1,.hero>.sub,.hero>.go,.hero>.trust,.hero.app .l>*,.hero.app .r').map((el, i) => ({ el, k: .14 + i * .05, h1: el.tagName === 'H1', off: 0 }));
+  /* each hero layer starts to leave only once its middle has passed the middle of the screen (on a phone the app's iPhone sits below the words) */
+  let heroEnd = 0;
+  const heroMeasure = () => { heroEnd = 0; for (const h of heroEls) { let t = 0, e = h.el; while (e) { t += e.offsetTop; e = e.offsetParent; } h.off = Math.max(0, t + h.el.offsetHeight / 2 - innerHeight / 2); heroEnd = Math.max(heroEnd, h.off); } };
+  heroMeasure(); addEventListener('resize', heroMeasure, { passive: true }); addEventListener('load', heroMeasure);
   const trail = $('.trail'), svgp = trail && $('svg.path', trail), base = svgp && $('.base', svgp), hk = $('.hiker i'), ruler = $('.ruler');
   let ga, gb, gL = 0;
   if (base) {
@@ -182,9 +186,9 @@
     } else { wr(world, 'transform', 'scale(' + f(1.03 + .03 * push, 4) + ')'); }
 
     /* hero: its layers part at different speeds as the page leaves it; headings lean with the scroll speed */
-    if (y < vh * 1.3) {
-      const o = clamp(y / (vh * .85), 0, 1), op = Math.max(0, 1 - o * 1.15), sk = Math.abs(vn) < .004 ? '' : ' skewY(' + f(-vn * 2.6 * K.skew) + 'deg)';
-      const ae = D.activeElement; for (const h of heroEls) { const keep = ae && h.el.contains(ae); const t3 = y > 2 ? 'translate3d(0,' + f(y * h.k, 1) + 'px,0)' : ''; wr(h.el, 'opacity', op >= .999 || keep ? '' : f(op, 3)); wr(h.el, 'transform', (t3 + (h.h1 ? sk : '')).trim()); }
+    if (y < vh * 1.3 + heroEnd) {
+      const sk = Math.abs(vn) < .004 ? '' : ' skewY(' + f(-vn * 2.6 * K.skew) + 'deg)';
+      const ae = D.activeElement; for (const h of heroEls) { const ly = Math.max(0, y - h.off), op = Math.max(0, 1 - clamp(ly / (vh * .85), 0, 1) * 1.15), keep = ae && h.el.contains(ae); const t3 = ly > 2 ? 'translate3d(0,' + f(ly * h.k, 1) + 'px,0)' : ''; wr(h.el, 'opacity', op >= .999 || keep ? '' : f(op, 3)); wr(h.el, 'transform', (t3 + (h.h1 ? sk : '')).trim()); }
     }
     for (const h of heads) {
       if (h._hero || !h._p) continue;

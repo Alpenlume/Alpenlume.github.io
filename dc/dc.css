@@ -405,8 +405,8 @@ body.t-dusk :is(.card .kick b,.card .tag b,.step .n b,.ex .tr,.mc .mk,.offer .bd
 .hero .macwin .vtoggle{right:14px;bottom:14px}
 /* 15.11.2026: the camera (Dynamic Island) where the screens' own device has it — 21.5 % of the screen wide, 3.2 % from its top —
    so it sits exactly on the island the recordings carry and in the right place on the still screens (no double, no overlap) */
-.dv .isl{top:5.38cqw;width:20.5cqw;height:7.94cqw;margin-left:-10.25cqw}
-.dv .isl:after{right:1.9cqw;width:3.4cqw;height:3.4cqw;margin-top:-1.7cqw}
+.dv .isl{top:2.88cqw;width:20.9cqw;height:8.24cqw;margin-left:-10.45cqw}
+.dv .isl:after{right:2.05cqw;width:3.4cqw;height:3.4cqw;margin-top:-1.7cqw}
 /* 15.11.2026: the pause button sits under the phone or the window, never on the app's own screen */
 .vtoggle{width:38px;height:38px;font-size:12px;line-height:36px}
 .dv>.vtoggle,.ph .wrap>.vtoggle,.hero.app .r>.vtoggle{left:50%;right:auto;top:auto;bottom:-56px;transform:translateX(-50%)}
