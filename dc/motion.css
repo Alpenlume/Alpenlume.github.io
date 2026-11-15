@@ -139,3 +139,9 @@ html.mo-lite #world{animation:mo-cam 2.2s var(--mo-ease) backwards}
 }
 /* anything that still reaches a reduced-motion visitor stays still */
 @media (prefers-reduced-motion:reduce){.mo-haze,.mo-grain{display:none}}
+/* 15.11.2026: on an app's page the app is there at once — a shorter arrival (the same moves, about half the time) */
+@media (prefers-reduced-motion:no-preference){
+body::before{animation-duration:.35s}
+.hero.app .appid,.hero.app .lede,.hero.app .chips span,.hero.app .cta>*{animation-duration:.55s!important;animation-delay:.08s!important}
+.hero.app .r{animation-duration:.8s!important;animation-delay:.05s!important}
+}
